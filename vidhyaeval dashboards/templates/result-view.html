@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result View - VidhyaEval</title>
+    <link rel="icon" type="image/png" href="/static/VidhyEval_logo.png logo.png">
+    <link rel="shortcut icon" href="/static/VidhyEval_logo.png">
+    <meta name="theme-color" content="#7C3AED">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .animate-slide-up {
+            animation: slideUp 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+        }
+        .hover-scale {
+            transition: transform 0.2s ease-in-out;
+        }
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+
+        /* Custom Select Styles */
+        .custom-select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: none;
+            cursor: pointer;
+            padding-right: 2.5rem !important;
+        }
+
+        .custom-select-wrapper {
+            position: relative;
+            display: block;
+        }
+
+        .custom-select-icon {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .dark .custom-select-icon {
+            color: #9CA3AF;
+        }
+
+        /* Update the select container styles */
+        .relative {
+            position: relative;
+            display: block;
+        }
+
+        /* Ensure the icon container doesn't affect select padding */
+        .pointer-events-none {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transform: translateY(0);
+            transition: transform 0.3s ease-in-out;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .dark .modal-content {
+            background-color: #1f2937;
+        }
+
+        .close {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #6b7280;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .close:hover {
+            color: #ef4444;
+        }
+
+        .dark .close {
+            color: #9ca3af;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1.5rem;
+        }
+
+        .dark .modal-title {
+            color: #f3f4f6;
+        }
+
+        /* Toggle Switch Styles */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 3rem;
+            height: 1.5rem;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e7eb;
+            transition: .4s;
+            border-radius: 1.5rem;
+        }
+
+        .dark .toggle-slider {
+            background-color: #374151;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 1.125rem;
+            width: 1.125rem;
+            left: 0.1875rem;
+            bottom: 0.1875rem;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #7c3aed;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(1.5rem);
+        }
+
+        input:focus + .toggle-slider {
+            box-shadow: 0 0 1px #7c3aed;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen dark:bg-gray-900">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-lg fixed w-full z-50 dark:bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="student-dashboard.html">
+                            <img src="/static/VidhyEval_logo.png" alt="VidyaEval Logo" class="h-8 w-10 mr-2">
+                        </a>
+                        <a href="student-dashboard.html">
+                            <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent font-['ZCOOL_QingKe_HuangYou']">VidhyaEval</h1>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="flex items-center md:hidden">
+                    <button type="button" class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500 dark:text-gray-300 dark:hover:text-gray-200 dark:hover:bg-gray-700">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="student-dashboard.html" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 dark:text-gray-300 dark:hover:text-purple-400" onclick="console.log('Dashboard link clicked')">Dashboard</a>
+                    <a href="#" onclick="console.log('Results link clicked'); return false;" class="text-purple-600 dark:text-purple-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-purple-600 dark:border-purple-400">Results</a>
+                    <a href="student-dashboard.html#upcoming-tests" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 dark:text-gray-300 dark:hover:text-purple-400" onclick="console.log('Upcoming Tests link clicked')">Upcoming Tests</a>
+                    <a href="student-dashboard.html#submissions" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 dark:text-gray-300 dark:hover:text-purple-400" onclick="console.log('Submissions link clicked')">Submissions</a>
+                </div>
+                
+                <div class="flex items-center">
+                    <div class="flex items-center">
+                        <div class="relative">
+                            <button class="flex items-center space-x-3 focus:outline-none mr-4 sm:mr-8" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                                <div class="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center dark:bg-purple-900">
+                                    <img id="navbar-profile-photo" src="assets/images/default-profile.png" alt="Profile" class="h-8 w-8 rounded-full object-cover">
+                                </div>
+                                <div class="hidden sm:block text-right">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-gray-100" id="student-name">Student Name</span>
+                                    <span class="block text-xs text-gray-500 dark:text-gray-400">Student</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-gray-400 text-xs ml-2 dark:text-gray-500"></i>
+                            </button>
+
+                            <!-- Dropdown menu -->
+                            <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 dark:bg-gray-800 dark:ring-white dark:ring-opacity-10" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                                <a href="#settings-modal" id="settings-button" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" role="menuitem" tabindex="-1">
+                                    <i class="fas fa-cog mr-2"></i> Settings
+                                </a>
+                                <a href="index.html" id="logout-button" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" role="menuitem" tabindex="-1">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Theme Toggle Button -->
+                    <button id="theme-toggle" class="w-8 h-8 rounded-full shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 flex items-center justify-center bg-indigo-700 text-white hover:bg-indigo-600">
+                        <i class="fas fa-moon text-sm"></i>
+                        <i class="fas fa-sun text-sm hidden"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="student-dashboard.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-purple-400 dark:hover:bg-gray-700" onclick="console.log('Mobile Dashboard link clicked')">Dashboard</a>
+                <a href="#" onclick="console.log('Mobile Results link clicked'); return false;" class="block px-3 py-2 rounded-md text-base font-medium text-purple-600 dark:text-purple-400 bg-gray-50 dark:bg-gray-700">Results</a>
+                <a href="student-dashboard.html#upcoming-tests" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-purple-400 dark:hover:bg-gray-700" onclick="console.log('Mobile Upcoming Tests link clicked')">Upcoming Tests</a>
+                <a href="student-dashboard.html#submissions" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-purple-400 dark:hover:bg-gray-700" onclick="console.log('Mobile Submissions link clicked')">Submissions</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <div class="max-w-7xl mx-auto py-8 px-8 lg:px-12">
+            <!-- Result Header -->
+            <div class="px-4 py-6 sm:px-0">
+                <div class="flex flex-col md:flex-row md:justify-between md:items-center bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                    <div>
+                        <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">Mid-Term Examination - Mathematics</h2>
+                        <p class="text-gray-600 dark:text-gray-400 mt-1">Evaluated on: 15 March 2023</p>
+                    </div>
+                    <div class="mt-4 md:mt-0">
+                        <div class="flex flex-col items-end">
+                            <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">85/100</div>
+                            <div class="text-lg font-medium text-gray-700 dark:text-gray-300">Grade: A</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Search Bar for Results -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <div class="w-full sm:w-1/2">
+                            <label for="exam-format" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Exam Format</label>
+                            <div class="relative">
+                                <select id="exam-format" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md dark:bg-gray-700 dark:text-gray-300 custom-select">
+                                    <option value="">All Formats</option>
+                                    <option value="mid-term">Mid-Term</option>
+                                    <option value="final">Final Examination</option>
+                                    <option value="quiz">Quiz</option>
+                                    <option value="project">Project</option>
+                                    <option value="practical">Practical Exam</option>
+                                </select>
+                                <div class="custom-select-icon">
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full sm:w-1/2">
+                            <label for="subject" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Subject</label>
+                            <div class="relative">
+                                <select id="subject" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md dark:bg-gray-700 dark:text-gray-300 custom-select">
+                                    <option value="">All Subjects</option>
+                                    <option value="mathematics">Mathematics</option>
+                                    <option value="science">Science</option>
+                                    <option value="physics">Physics</option>
+                                    <option value="chemistry">Chemistry</option>
+                                    <option value="biology">Biology</option>
+                                    <option value="computer-science">Computer Science</option>
+                                    <option value="english">English</option>
+                                </select>
+                                <div class="custom-select-icon">
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full sm:w-auto flex items-end">
+                            <button id="search-results" class="w-full sm:w-auto py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:bg-purple-700 dark:hover:bg-purple-800 transition-colors duration-200">
+                                <i class="fas fa-search mr-2"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Content -->
+            <div class="px-4 sm:px-0">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Left Column - Answer Sheet Preview -->
+                    <div class="md:col-span-2">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                            <div class="p-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 flex justify-between items-center">
+                                <h3 class="text-lg font-medium text-gray-800 dark:text-gray-100">Answer Sheet</h3>
+                                <div class="flex space-x-2">
+                                    <button class="inline-flex items-center px-3 py-1 border border-gray-300 dark:border-gray-600 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:text-gray-500 dark:hover:text-gray-200 focus:outline-none focus:border-purple-300 focus:shadow-outline-purple active:text-gray-800 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150">
+                                        <i class="fas fa-download mr-2"></i> Download
+                                    </button>
+                                    <button class="inline-flex items-center px-3 py-1 border border-gray-300 dark:border-gray-600 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:text-gray-500 dark:hover:text-gray-200 focus:outline-none focus:border-purple-300 focus:shadow-outline-purple active:text-gray-800 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150">
+                                        <i class="fas fa-print mr-2"></i> Print
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <!-- Answer Sheet Preview -->
+                                <div class="border border-gray-300 dark:border-gray-600 rounded-md p-4 bg-white dark:bg-gray-800 min-h-[600px]">
+                                    <!-- This would be the actual scanned answer sheet image or PDF viewer -->
+                                    <div class="flex items-center justify-center h-full">
+                                        <div class="text-center">
+                                            <i class="fas fa-file-alt text-gray-400 dark:text-gray-500 text-6xl mb-4"></i>
+                                            <p class="text-gray-500 dark:text-gray-400">Answer sheet preview would appear here</p>
+                                            <p class="text-sm text-gray-400 dark:text-gray-500 mt-2">The actual implementation would display the scanned document</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column - Evaluation Details -->
+                    <div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                            <div class="p-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                                <h3 class="text-lg font-medium text-gray-800 dark:text-gray-100">Evaluation Details</h3>
+                            </div>
+                            <div class="p-6">
+                                <!-- Overall Score -->
+                                <div class="mb-6">
+                                    <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Overall Score</h4>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                                        <div class="bg-purple-600 h-2.5 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                    <div class="flex justify-between mt-1">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">0</span>
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">100</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Score Breakdown -->
+                                <div class="mb-6">
+                                    <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Score Breakdown</h4>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <div class="flex justify-between items-center mb-1">
+                                                <div class="flex items-center cursor-pointer question-toggle" data-target="question1-details">
+                                                <span class="text-sm text-gray-600 dark:text-gray-400">Question 1</span>
+                                                    <i class="fas fa-chevron-down ml-2 text-xs text-gray-500 dark:text-gray-400 transition-transform duration-300"></i>
+                                                </div>
+                                                <span class="text-sm font-medium text-gray-800 dark:text-gray-200">18/20</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                                <div class="bg-green-500 h-2 rounded-full" style="width: 90%"></div>
+                                            </div>
+                                            <div id="question1-details" class="mt-2 bg-gray-50 dark:bg-gray-700 rounded p-3 text-sm text-gray-600 dark:text-gray-300 hidden">
+                                                <p>Your answer correctly identified all the key concepts in the question. You demonstrated excellent understanding of calculus fundamentals and applied the right formulas.</p>
+                                                <p class="mt-2 font-semibold">Why you lost 2 points:</p>
+                                                <ul class="list-disc pl-5 mt-1">
+                                                    <li>Minor error in the final calculation (-1)</li>
+                                                    <li>Missing explanation for the limit approach (-1)</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between items-center mb-1">
+                                                <div class="flex items-center cursor-pointer question-toggle" data-target="question2-details">
+                                                <span class="text-sm text-gray-600 dark:text-gray-400">Question 2</span>
+                                                    <i class="fas fa-chevron-down ml-2 text-xs text-gray-500 dark:text-gray-400 transition-transform duration-300"></i>
+                                                </div>
+                                                <span class="text-sm font-medium text-gray-800 dark:text-gray-200">15/20</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                                <div class="bg-green-500 h-2 rounded-full" style="width: 75%"></div>
+                                            </div>
+                                            <div id="question2-details" class="mt-2 bg-gray-50 dark:bg-gray-700 rounded p-3 text-sm text-gray-600 dark:text-gray-300 hidden">
+                                                <p>Your approach to solving the complex equation was mostly correct. You identified the right method and set up the solution well.</p>
+                                                <p class="mt-2 font-semibold">Why you lost 5 points:</p>
+                                                <ul class="list-disc pl-5 mt-1">
+                                                    <li>Error in algebraic simplification (-2)</li>
+                                                    <li>Incorrect application of the formula in step 3 (-2)</li>
+                                                    <li>Missing units in final answer (-1)</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between items-center mb-1">
+                                                <div class="flex items-center cursor-pointer question-toggle" data-target="question3-details">
+                                                <span class="text-sm text-gray-600 dark:text-gray-400">Question 3</span>
+                                                    <i class="fas fa-chevron-down ml-2 text-xs text-gray-500 dark:text-gray-400 transition-transform duration-300"></i>
+                                                </div>
+                                                <span class="text-sm font-medium text-gray-800 dark:text-gray-200">12/20</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 60%"></div>
+                                            </div>
+                                            <div id="question3-details" class="mt-2 bg-gray-50 dark:bg-gray-700 rounded p-3 text-sm text-gray-600 dark:text-gray-300 hidden">
+                                                <p>Your understanding of the core concept was present, but the explanation lacked depth and the application had significant errors.</p>
+                                                <p class="mt-2 font-semibold">Why you lost 8 points:</p>
+                                                <ul class="list-disc pl-5 mt-1">
+                                                    <li>Incomplete explanation of the theorem (-3)</li>
+                                                    <li>Wrong approach to solving the second part (-3)</li>
+                                                    <li>Missing several steps in your solution (-2)</li>
+                                                </ul>
+                                                <p class="mt-2 text-purple-600 dark:text-purple-400 font-medium">Suggestion: Review Chapter 4, pages 78-92 for this concept.</p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between items-center mb-1">
+                                                <div class="flex items-center cursor-pointer question-toggle" data-target="question4-details">
+                                                <span class="text-sm text-gray-600 dark:text-gray-400">Question 4</span>
+                                                    <i class="fas fa-chevron-down ml-2 text-xs text-gray-500 dark:text-gray-400 transition-transform duration-300"></i>
+                                                </div>
+                                                <span class="text-sm font-medium text-gray-800 dark:text-gray-200">20/20</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                                <div class="bg-green-500 h-2 rounded-full" style="width: 100%"></div>
+                                            </div>
+                                            <div id="question4-details" class="mt-2 bg-gray-50 dark:bg-gray-700 rounded p-3 text-sm text-gray-600 dark:text-gray-300 hidden">
+                                                <p>Outstanding work! Your solution was perfect, with a clear understanding of the problem, correct application of formulas, and excellent explanation of your reasoning.</p>
+                                                <p class="mt-2 font-semibold">Strengths:</p>
+                                                <ul class="list-disc pl-5 mt-1">
+                                                    <li>Perfect step-by-step approach</li>
+                                                    <li>Clear and concise explanation</li>
+                                                    <li>Proper mathematical notation used throughout</li>
+                                                    <li>Creative solution showing deep understanding</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- AI Evaluation Criteria -->
+                                <div class="mb-6">
+                                    <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">AI Evaluation Criteria</h4>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <div class="flex justify-between items-center mb-1">
+                                                <span class="text-sm text-gray-600 dark:text-gray-400">Keyword Matching</span>
+                                                <span class="text-sm font-medium text-gray-800 dark:text-gray-200">92%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                                <div class="bg-purple-500 h-2 rounded-full" style="width: 92%"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between items-center mb-1">
+                                                <span class="text-sm text-gray-600 dark:text-gray-400">Answer Structure</span>
+                                                <span class="text-sm font-medium text-gray-800 dark:text-gray-200">85%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                                <div class="bg-purple-500 h-2 rounded-full" style="width: 85%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- AI Feedback -->
+                                <div>
+                                    <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">AI Feedback</h4>
+                                    <div class="bg-gray-50 dark:bg-gray-700 rounded-md p-4 text-sm text-gray-700 dark:text-gray-300">
+                                        <p class="mb-2">Overall, this is a strong performance. Here are some specific observations:</p>
+                                        <ul class="list-disc pl-5 space-y-1">
+                                            <li>Excellent work on Questions 4 and 5, showing complete understanding of the concepts.</li>
+                                            <li>Question 1 was well-answered but missed a few minor details.</li>
+                                            <li>In Question 2, the approach was correct but the final calculation had errors.</li>
+                                            <li>Question 3 needed more detailed explanations and examples to support your answer.</li>
+                                        </ul>
+                                        <p class="mt-2">Areas for improvement: Focus on providing more detailed explanations and double-check calculations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content max-w-2xl animate-slide-up">
+            <span class="close" id="closeSettingsModal">&times;</span>
+            <h2 class="modal-title">Settings</h2>
+            
+            <div class="mt-6 space-y-6">
+                <!-- Profile Settings -->
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Profile Settings</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Profile Picture</label>
+                            <div class="flex items-center space-x-4">
+                                <div class="relative group">
+                                    <img id="settings-profile-photo" src="assets/images/default-profile.png" alt="Profile" class="h-16 w-16 rounded-full object-cover border-2 border-purple-200">
+                                    <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                        <i class="fas fa-camera text-white text-xl"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <label for="profile-photo-upload" class="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                                        <i class="fas fa-upload mr-2"></i> Upload New Photo
+                                    </label>
+                                    <input id="profile-photo-upload" type="file" class="hidden" accept="image/*">
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">JPG, PNG or GIF (MAX. 2MB)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="display-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Display Name</label>
+                            <input type="text" id="display-name" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-gray-100 transition-colors duration-200" value="John Doe">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                            <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-gray-100 transition-colors duration-200" value="john.doe@example.com">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification Settings -->
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Notification Settings</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700 dark:text-gray-300">Email Notifications</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700 dark:text-gray-300">Desktop Notifications</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme Settings -->
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Theme Settings</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700 dark:text-gray-300">Dark Mode</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="theme-toggle-settings">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <div class="flex justify-end">
+                    <button class="px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors duration-200">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/auth.js"></script>
+    <script src="/static/result-view.js"></script>
+    <script src="/static/theme.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // First, immediately remove any error popups that might appear
+            const removeErrorPopup = () => {
+                // Target the specific error popup shown in the screenshot
+                const errorPopups = document.querySelectorAll('.fixed.bottom-4.right-4.bg-red-500, .fixed.bg-red-500');
+                errorPopups.forEach(popup => {
+                    if (popup) {
+                        popup.style.display = 'none';
+                        popup.remove();
+                    }
+                });
+            };
+
+            // Execute immediately and again after a short delay
+            removeErrorPopup();
+            setTimeout(removeErrorPopup, 500);
+
+            console.log("Result view page loaded, initializing...");
+
+            // Search Results Functionality
+            const searchButton = document.getElementById('search-results');
+            const examFormatSelect = document.getElementById('exam-format');
+            const subjectSelect = document.getElementById('subject');
+            
+            // Sample result data for demonstration
+            const sampleResults = [
+                {
+                    id: 'test1',
+                    title: 'Mid-Term Examination - Mathematics',
+                    date: '15 March 2023',
+                    score: '85/100',
+                    subject: 'mathematics',
+                    format: 'mid-term',
+                    grade: 'A'
+                },
+                {
+                    id: 'test2',
+                    title: 'Final Examination - Physics',
+                    date: '28 April 2023',
+                    score: '92/100',
+                    subject: 'physics',
+                    format: 'final',
+                    grade: 'A+'
+                },
+                {
+                    id: 'test3',
+                    title: 'Quiz - Chemistry',
+                    date: '10 February 2023',
+                    score: '18/20',
+                    subject: 'chemistry',
+                    format: 'quiz',
+                    grade: 'A'
+                },
+                {
+                    id: 'test4',
+                    title: 'Project - Computer Science',
+                    date: '5 March 2023',
+                    score: '47/50',
+                    subject: 'computer-science',
+                    format: 'project',
+                    grade: 'A+'
+                },
+                {
+                    id: 'test5',
+                    title: 'Mid-Term Examination - English',
+                    date: '12 March 2023',
+                    score: '75/100',
+                    subject: 'english',
+                    format: 'mid-term',
+                    grade: 'B+'
+                },
+                {
+                    id: 'test6',
+                    title: 'Practical Exam - Biology',
+                    date: '20 April 2023',
+                    score: '45/50',
+                    subject: 'biology',
+                    format: 'practical',
+                    grade: 'A'
+                }
+            ];
+            
+            // Pre-select the current result by default
+            const urlParams = new URLSearchParams(window.location.search);
+            const testId = urlParams.get('testId') || 'test1';
+            const currentTest = sampleResults.find(r => r.id === testId) || sampleResults[0];
+            
+            if (currentTest) {
+                examFormatSelect.value = currentTest.format;
+                subjectSelect.value = currentTest.subject;
+            }
+            
+            // Add event listener for search button
+            if (searchButton) {
+                searchButton.addEventListener('click', function() {
+                    const selectedFormat = examFormatSelect.value;
+                    const selectedSubject = subjectSelect.value;
+                    
+                    console.log(`Searching for: Format=${selectedFormat}, Subject=${selectedSubject}`);
+                    
+                    // Filter results based on selections
+                    let filteredResults = sampleResults;
+                    
+                    if (selectedFormat) {
+                        filteredResults = filteredResults.filter(r => r.format === selectedFormat);
+                    }
+                    
+                    if (selectedSubject) {
+                        filteredResults = filteredResults.filter(r => r.subject === selectedSubject);
+                    }
+                    
+                    // Display the filtered results
+                    displaySearchResults(filteredResults);
+                });
+            }
+            
+            // Function to display search results
+            function displaySearchResults(results) {
+                // Check if the search results container exists, if not, create it
+                let searchResultsContainer = document.getElementById('search-results-container');
+                
+                if (!searchResultsContainer) {
+                    const resultContent = document.querySelector('.px-4.sm\\:px-0');
+                    searchResultsContainer = document.createElement('div');
+                    searchResultsContainer.id = 'search-results-container';
+                    searchResultsContainer.className = 'bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6';
+                    resultContent.insertBefore(searchResultsContainer, resultContent.firstChild);
+                }
+                
+                // Clear previous results
+                searchResultsContainer.innerHTML = '';
+                
+                // Create header
+                const header = document.createElement('h3');
+                header.className = 'text-lg font-medium text-gray-800 dark:text-gray-100 mb-4';
+                header.textContent = `Search Results (${results.length})`;
+                searchResultsContainer.appendChild(header);
+                
+                if (results.length === 0) {
+                    const noResults = document.createElement('p');
+                    noResults.className = 'text-gray-600 dark:text-gray-400';
+                    noResults.textContent = 'No results found. Please try different search criteria.';
+                    searchResultsContainer.appendChild(noResults);
+                    return;
+                }
+                
+                // Create results grid
+                const resultsGrid = document.createElement('div');
+                resultsGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4';
+                
+                // Add result cards
+                results.forEach(result => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:shadow-lg transition-shadow duration-200';
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${result.format === 'mid-term' || result.format === 'final' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'}">
+                                ${result.format.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                ${result.grade}
+                            </span>
+                        </div>
+                        <h4 class="text-md font-semibold text-gray-800 dark:text-gray-100 mb-1">${result.title}</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Date: ${result.date}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-purple-600 dark:text-purple-400">${result.score}</span>
+                            <a href="result-view.html?testId=${result.id}" class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-purple-600 rounded hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                                View Details
+                            </a>
+                        </div>
+                    `;
+                    resultsGrid.appendChild(card);
+                });
+                
+                searchResultsContainer.appendChild(resultsGrid);
+                
+                // Scroll to results
+                searchResultsContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            console.log("Test ID from URL:", testId);
+            
+            // Mock test data to use if no data is provided
+            const mockTestData = {
+                title: "Mid-Term Examination - Mathematics",
+                date: "15 March 2023",
+                score: "85/100",
+                subject: "Mathematics",
+                professor: "Dr. Johnson",
+                multipleChoice: "45/50",
+                problemSolving: "40/50",
+                questionPaper: {
+                    name: "Mathematics_Mid_Term_2024.pdf",
+                    size: "2.5 MB"
+                },
+                answerSheet: {
+                    name: "Mathematics_Mid_Term_Answer_2024.pdf", 
+                    size: "3.1 MB"
+                },
+                performance: {
+                    yourScore: "85%",
+                    classAverage: "78%",
+                    highestScore: "95%",
+                    improvementAreas: [
+                        "Focus on complex problem-solving questions",
+                        "Review Chapter 4: Calculus fundamentals",
+                        "Practice more time-management during tests"
+                    ]
+                }
+            };
+            
+            // Try to get test data from localStorage
+            let testData;
+            try {
+                const storedTestData = localStorage.getItem('currentTestData');
+                console.log("Retrieved data from localStorage:", storedTestData ? "Found" : "Not found");
+                
+                if (storedTestData) {
+                    testData = JSON.parse(storedTestData);
+                } else {
+                    console.log("No test data found in localStorage, using default data");
+                    testData = mockTestData;
+                }
+                
+                // Populate test data in the UI
+                populateTestData(testData);
+                
+            } catch (error) {
+                console.error('Error processing test data:', error);
+                console.log("Error loading test data, using default data");
+                populateTestData(mockTestData);
+            }
+            
+            // Function to populate the UI with test data
+            function populateTestData(data) {
+                console.log("Populating UI with test data");
+                
+                // Update title and date
+                const titleElement = document.querySelector('h2');
+                const dateElement = document.querySelector('p.mt-1');
+                const scoreElement = document.querySelector('div.text-3xl');
+                
+                if (titleElement) {
+                    console.log("Setting title to:", data.title);
+                    titleElement.textContent = data.title;
+                } else {
+                    console.error("Title element not found");
+                }
+                
+                if (dateElement) {
+                    dateElement.textContent = `Evaluated on: ${data.date}`;
+                }
+                
+                if (scoreElement) {
+                    scoreElement.textContent = data.score;
+                }
+                
+                // Set progress bars for questions
+                setProgressBars();
+                
+                // Initialize question toggles after data is loaded
+                setTimeout(initializeQuestionToggles, 200);
+            }
+            
+            // Initialize question toggles
+            function initializeQuestionToggles() {
+                const questionToggles = document.querySelectorAll('.question-toggle');
+                console.log("Initializing question toggles, found:", questionToggles.length);
+                
+                questionToggles.forEach(toggle => {
+                    toggle.addEventListener('click', function() {
+                        const targetId = this.getAttribute('data-target');
+                        const targetElement = document.getElementById(targetId);
+                        const icon = this.querySelector('i');
+                        
+                        if (!targetElement) {
+                            console.error("Target element not found:", targetId);
+                            return;
+                        }
+                        
+                        // Toggle display of details
+                        if (targetElement.classList.contains('hidden')) {
+                            targetElement.classList.remove('hidden');
+                            if (icon) icon.style.transform = 'rotate(-180deg)';
+                        } else {
+                            targetElement.classList.add('hidden');
+                            if (icon) icon.style.transform = 'rotate(0)';
+                        }
+                    });
+                });
+            }
+            
+            // Set progress bars based on question scores
+            function setProgressBars() {
+                try {
+                    console.log("Setting progress bars");
+                    
+                    // Overall Score: 85/100 = 85%
+                    const overallBar = document.querySelector('.bg-purple-500, .bg-purple-600');
+                    if (overallBar) {
+                        overallBar.style.width = '85%';
+                    } else {
+                        console.error("Overall progress bar not found");
+                    }
+                    
+                    // Question 1: 18/20 = 90%
+                    const q1Bars = document.querySelectorAll('.bg-green-500');
+                    if (q1Bars && q1Bars.length > 0) {
+                        q1Bars[0].style.width = '90%';
+                    }
+                    
+                    // Question 2: 15/20 = 75%
+                    if (q1Bars && q1Bars.length > 1) {
+                        q1Bars[1].style.width = '75%';
+                    }
+                    
+                    // Question 3: 12/20 = 60%
+                    const q3Bar = document.querySelector('.bg-yellow-500');
+                    if (q3Bar) {
+                        q3Bar.style.width = '60%';
+                    }
+                    
+                    // Question 4: 20/20 = 100%
+                    if (q1Bars && q1Bars.length > 2) {
+                        q1Bars[2].style.width = '100%';
+                    }
+                } catch (error) {
+                    console.error("Error setting progress bars:", error);
+                }
+            }
+            
+            // Close error popup if it exists
+            const closeErrorBtn = document.querySelector('.bg-red-500 .text-white');
+            if (closeErrorBtn) {
+                closeErrorBtn.addEventListener('click', function() {
+                    this.closest('.bg-red-500').style.display = 'none';
+                });
+            }
+            
+            // Mobile menu functionality
+            const mobileMenuButton = document.querySelector('.mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (event) => {
+                if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+
+            // Close mobile menu when clicking a link
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            // Theme Toggle Functionality
+            const themeToggle = document.getElementById('theme-toggle');
+            const htmlElement = document.documentElement;
+            
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('vidyaeval-theme');
+            if (savedTheme) {
+                htmlElement.classList.remove('dark', 'light');
+                htmlElement.classList.add(savedTheme);
+                updateThemeIcon(savedTheme === 'dark');
+                applyThemeStyles(savedTheme);
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                htmlElement.classList.remove('light');
+                    htmlElement.classList.add('dark');
+                updateThemeIcon(true);
+                applyThemeStyles('dark');
+            }
+            
+            // Theme toggle click handler
+            themeToggle.addEventListener('click', () => {
+                const isDark = htmlElement.classList.contains('dark');
+                htmlElement.classList.remove('dark', 'light');
+                htmlElement.classList.add(isDark ? 'light' : 'dark');
+                updateThemeIcon(!isDark);
+                localStorage.setItem('vidyaeval-theme', isDark ? 'light' : 'dark');
+                applyThemeStyles(isDark ? 'light' : 'dark');
+            });
+
+            // Update theme icon
+            function updateThemeIcon(isDark) {
+                const moonIcon = themeToggle.querySelector('.fa-moon');
+                const sunIcon = themeToggle.querySelector('.fa-sun');
+                
+                if (isDark) {
+                    moonIcon.style.display = 'none';
+                    sunIcon.style.display = 'block';
+                    themeToggle.classList.remove('bg-indigo-700', 'text-white', 'hover:bg-indigo-600');
+                    themeToggle.classList.add('bg-yellow-300', 'text-yellow-800', 'hover:bg-yellow-200');
+                } else {
+                    moonIcon.style.display = 'block';
+                    sunIcon.style.display = 'none';
+                    themeToggle.classList.remove('bg-yellow-300', 'text-yellow-800', 'hover:bg-yellow-200');
+                    themeToggle.classList.add('bg-indigo-700', 'text-white', 'hover:bg-indigo-600');
+                }
+            }
+
+            // Apply theme styles to specific elements
+            function applyThemeStyles(theme) {
+                const isDark = theme === 'dark';
+                const body = document.body;
+
+                // Apply theme to body
+                if (isDark) {
+                    body.classList.remove('bg-gray-50');
+                    body.classList.add('bg-gray-900');
+                } else {
+                    body.classList.add('bg-gray-50');
+                    body.classList.remove('bg-gray-900');
+                }
+
+                // Apply theme to navbar
+                const navbar = document.querySelector('nav');
+                if (navbar) {
+                    if (isDark) {
+                        navbar.classList.remove('bg-white');
+                        navbar.classList.add('bg-gray-800');
+                    } else {
+                        navbar.classList.add('bg-white');
+                        navbar.classList.remove('bg-gray-800');
+                    }
+                }
+
+                // Apply theme to cards and content boxes
+                document.querySelectorAll('.bg-white, .dark\\:bg-gray-800').forEach(el => {
+                    if (!el.classList.contains('preserve-color')) {
+                        if (isDark) {
+                            el.classList.remove('bg-white');
+                            el.classList.add('bg-gray-800');
+                        } else {
+                            el.classList.add('bg-white');
+                            el.classList.remove('bg-gray-800');
+                        }
+                    }
+                });
+
+                // Apply theme to other dark mode specific elements
+                document.querySelectorAll('.dark\\:text-gray-100, .dark\\:text-gray-200, .dark\\:text-gray-300, .dark\\:text-gray-400').forEach(el => {
+                    if (isDark) {
+                        el.classList.add('text-gray-100');
+                    } else {
+                        el.classList.remove('text-gray-100');
+                    }
+                });
+
+                // Apply theme to settings modal toggle
+                const themeToggleSettings = document.getElementById('theme-toggle-settings');
+                if (themeToggleSettings) {
+                    themeToggleSettings.checked = isDark;
+                }
+            }
+
+            // User menu dropdown functionality
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown');
+
+            // Toggle dropdown
+            userMenuButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.classList.toggle('hidden');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!userMenuButton.contains(event.target) && !userDropdown.contains(event.target)) {
+                    userDropdown.classList.add('hidden');
+                }
+            });
+
+            // Prevent dropdown from closing when clicking inside it
+            userDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+            // Check authentication state
+            firebase.auth().onAuthStateChanged(async (user) => {
+                if (!user) {
+                    // If not logged in, redirect to login page
+                    window.location.href = 'index.html';
+                        return;
+                    }
+
+                // Get user data from Firestore
+                const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+                const userData = userDoc.data();
+
+                // Verify user is a student
+                if (userData.role !== 'student') {
+                    window.location.href = 'teacher-dashboard.html';
+                        return;
+                    }
+
+                // Update UI with user data
+                document.getElementById('student-name').textContent = userData.fullName;
+            });
+
+            // Handle logout
+            document.getElementById('logout-button').addEventListener('click', (e) => {
+                e.preventDefault();
+                firebase.auth().signOut().then(() => {
+                    window.location.href = 'index.html';
+                });
+            });
+            
+            // Initialize theme
+            applyThemeStyles(htmlElement.classList.contains('dark') ? 'dark' : 'light');
+
+            // Theme toggle in settings
+            const themeToggleSettings = document.getElementById('theme-toggle-settings');
+            const settingsModal = document.getElementById('settings-modal');
+            const closeSettingsModal = document.getElementById('closeSettingsModal');
+            
+            if (themeToggleSettings) {
+                themeToggleSettings.checked = htmlElement.classList.contains('dark');
+                
+                themeToggleSettings.addEventListener('change', function() {
+                    if (this.checked) {
+                        htmlElement.classList.remove('light');
+                        htmlElement.classList.add('dark');
+                        localStorage.setItem('vidyaeval-theme', 'dark');
+                        updateThemeIcon(true);
+                        applyThemeStyles('dark');
+                    } else {
+                        htmlElement.classList.remove('dark');
+                        htmlElement.classList.add('light');
+                        localStorage.setItem('vidyaeval-theme', 'light');
+                        updateThemeIcon(false);
+                        applyThemeStyles('light');
+                    }
+                });
+            }
+            
+            // Settings modal functionality
+            if (settingsModal && closeSettingsModal) {
+                const settingsButton = document.getElementById('settings-button');
+                
+                settingsButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                settingsModal.style.display = 'block';
+                userDropdown.classList.add('hidden');
+            });
+
+            closeSettingsModal.addEventListener('click', function() {
+                settingsModal.style.display = 'none';
+            });
+
+                // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === settingsModal) {
+                    settingsModal.style.display = 'none';
+                }
+            });
+            }
+        });
+    </script>
+</body>
+</html> 

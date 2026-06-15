@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - VidhyaEval</title>
+    <link rel="icon" type="image/png" href="/static/VidhyEval_logo.png">
+    <link rel="shortcut icon" href="/static/VidhyEval_logo.png">
+    <meta name="theme-color" content="#7C3AED">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .animate-slide-up {
+            animation: slideUp 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+        }
+        .hover-scale {
+            transition: transform 0.2s ease-in-out;
+        }
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Dark mode styles */
+        .dark body {
+            background-color: #1a1a1a;
+            color: #e5e7eb;
+        }
+        .dark .bg-white {
+            background-color: #2d2d2d;
+        }
+        .dark .text-gray-900 {
+            color: #e5e7eb;
+        }
+        .dark .text-gray-700 {
+            color: #d1d5db;
+        }
+        .dark .text-gray-500 {
+            color: #9ca3af;
+        }
+        .dark .bg-gray-50 {
+            background-color: #1a1a1a;
+        }
+        .dark .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+        }
+        .dark .hover\:bg-gray-100:hover {
+            background-color: #3d3d3d;
+        }
+        .dark .bg-purple-100 {
+            background-color: #2d1b4d;
+        }
+        .dark .text-purple-600 {
+            color: #a78bfa;
+        }
+        .dark .bg-yellow-100 {
+            background-color: #3d2b1b;
+        }
+        .dark .text-yellow-600 {
+            color: #fbbf24;
+        }
+        .dark .bg-green-100 {
+            background-color: #1b3d2b;
+        }
+        .dark .text-green-600 {
+            color: #34d399;
+        }
+        .dark .bg-purple-50 {
+            background-color: #2d1b4d;
+        }
+        .dark .text-purple-900 {
+            color: #e9d8fd;
+        }
+        .dark .border {
+            border-color: #3d3d3d;
+        }
+        .dark .bg-gray-200 {
+            background-color: #3d3d3d;
+        }
+        .dark .bg-black {
+            background-color: #000000;
+        }
+        .dark .bg-opacity-50 {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .dark .ring-black {
+            --tw-ring-color: #000000;
+        }
+        .dark .ring-opacity-5 {
+            --tw-ring-opacity: 0.05;
+        }
+        .dark .bg-gray-100 {
+            background-color: #3d3d3d;
+        }
+        .dark .text-gray-600 {
+            color: #9ca3af;
+        }
+        .dark .bg-white {
+            background-color: #2d2d2d;
+        }
+        .dark .hover\:text-gray-700:hover {
+            color: #d1d5db;
+        }
+        .dark .hover\:bg-gray-100:hover {
+            background-color: #3d3d3d;
+        }
+        .dark .bg-gradient-to-r {
+            background-image: linear-gradient(to right, #4F46E5, #7C3AED);
+        }
+        .dark .from-purple-500 {
+            --tw-gradient-from: #8b5cf6;
+        }
+        .dark .to-purple-700 {
+            --tw-gradient-to: #6d28d9;
+        }
+        .dark .text-white {
+            color: #ffffff;
+        }
+        .dark .text-purple-100 {
+            color: #f3e8ff;
+        }
+        .dark .border-white {
+            border-color: #ffffff;
+        }
+        .dark .shadow-xl {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Section offset for fixed header */
+        section[id] {
+            scroll-margin-top: 4rem;
+        }
+
+        .dark .card {
+            background-color: #2d2d2d;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 12px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            z-index: 1001;
+        }
+        
+        .dark .modal-content {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            border: 1px solid #374151;
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #4b5563;
+            z-index: 1002;
+        }
+        
+        .dark .close {
+            color: #d1d5db;
+        }
+        
+        .modal-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+            line-height: 2rem;
+            margin-bottom: 1.5rem;
+            color: #111827;
+        }
+        
+        .dark .modal-title {
+            color: #f3f4f6;
+        }
+
+        /* Toggle Switch Styles */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 3rem;
+            height: 1.5rem;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e7eb;
+            transition: .4s;
+            border-radius: 1.5rem;
+        }
+
+        .dark .toggle-slider {
+            background-color: #374151;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 1.125rem;
+            width: 1.125rem;
+            left: 0.1875rem;
+            bottom: 0.1875rem;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #7c3aed;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(1.5rem);
+        }
+
+        input:focus + .toggle-slider {
+            box-shadow: 0 0 1px #7c3aed;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen dark:bg-gray-900">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-lg fixed w-full z-50 dark:bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="student-dashboard.html">
+                            <img src="/static/VidhyEval_logo.png" alt="VidyaEval Logo" class="h-8 w-10 mr-2">
+                        </a>
+                        <a href="student-dashboard.html">
+                            <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent font-['ZCOOL_QingKe_HuangYou']">VidhyaEval</h1>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="flex items-center md:hidden">
+                    <button type="button" class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500 dark:text-gray-300 dark:hover:text-gray-200 dark:hover:bg-gray-700">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-4">
+                    <a href="#" class="text-gray-900 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 dark:text-gray-300 dark:hover:text-purple-400">Dashboard</a>
+                    <a href="/templates/result-view.html" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 dark:text-gray-300 dark:hover:text-purple-400">Results</a>
+                    <a href="#upcoming-tests" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 dark:text-gray-300 dark:hover:text-purple-400">Upcoming Tests</a>
+                    <a href="#submissions" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 dark:text-gray-300 dark:hover:text-purple-400">Submissions</a>
+                </div>
+                
+                <div class="flex items-center">
+                    <div class="flex items-center">
+                        <div class="relative">
+                            <button class="flex items-center space-x-3 focus:outline-none mr-4 sm:mr-8" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                                <div class="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center dark:bg-purple-900">
+                                    <img id="navbar-profile-photo" src="assets/images/default-profile.png" alt="Profile" class="h-8 w-8 rounded-full object-cover">
+                                </div>
+                                <div class="hidden sm:block text-right">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-gray-100" id="student-name">{{ name }}</span>
+                                    <span class="block text-xs text-gray-500 dark:text-gray-400">Student</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-gray-400 text-xs ml-2 dark:text-gray-500"></i>
+                            </button>
+
+                            <!-- Dropdown menu -->
+                            <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 dark:bg-gray-800 dark:ring-white dark:ring-opacity-10" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                                <a href="javascript:void(0);" id="settings-button" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" role="menuitem" tabindex="-1">
+                                    <i class="fas fa-cog mr-2"></i> Settings
+                                </a>
+                                <a href="/templates/index.html" id="logout-button" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" role="menuitem" tabindex="-1">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Theme Toggle Button -->
+                    <button id="theme-toggle" class="w-8 h-8 rounded-full shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 flex items-center justify-center bg-indigo-700 text-white hover:bg-indigo-600">
+                        <i class="fas fa-moon text-sm"></i>
+                        <i class="fas fa-sun text-sm hidden"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg rounded-b-lg absolute w-full left-0 z-20 dark:bg-gray-800">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#" class="text-gray-900 hover:bg-gray-100 hover:text-purple-600 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-purple-400">Dashboard</a>
+                <a href="/templates/result-view.html" class="text-gray-700 hover:bg-gray-100 hover:text-purple-600 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-purple-400">Results</a>
+                <a href="#upcoming-tests" class="text-gray-700 hover:bg-gray-100 hover:text-purple-600 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-purple-400">Upcoming Tests</a>
+                <a href="#submissions" class="text-gray-700 hover:bg-gray-100 hover:text-purple-600 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-purple-400">Submissions</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Content -->
+    <main class="pt-20">
+        <div class="max-w-7xl mx-auto py-4 sm:py-8 px-4 sm:px-6 lg:px-8">
+            <!-- Welcome Section -->
+            <div class="px-2 sm:px-6 py-4 sm:py-8">
+                <div class="bg-gradient-to-r from-purple-500 to-purple-700 rounded-2xl shadow-xl p-4 sm:p-8 text-white mb-4 sm:mb-8 animate-fade-in dark:from-purple-600 dark:to-purple-800">
+                    <div class="flex flex-col sm:flex-row items-center sm:items-start justify-between">
+                        <div class="flex items-center space-x-4 sm:space-x-6">
+                            <img id="welcome-profile-photo" src="assets/images/default-profile.png" alt="Profile" class="h-12 w-12 sm:h-16 sm:w-16 rounded-full object-cover border-4 border-white shadow-lg">
+                            <div>
+                                <h2 class="text-2xl sm:text-3xl font-bold text-center sm:text-left">Welcome back, <span id="welcome-student-name">{{ name }}</span>!</h2>
+                                <p class="text-purple-100 mt-2 text-center sm:text-left">Student ID: <span id="student-id">{{ enrollment }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="px-2 sm:px-6 py-4 sm:py-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
+                    <!-- Recent Submissions -->
+                    <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 hover-scale animate-slide-up cursor-pointer dark:bg-gray-800">
+                        <div class="flex items-center">
+                            <div class="p-2 sm:p-3 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-400">
+                                <i class="fas fa-file-alt text-lg sm:text-xl"></i>
+                            </div>
+                            <div class="ml-3 sm:ml-4">
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Recent Submissions</p>
+                                <p class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">5</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 sm:mt-4">
+                            <div class="flex items-center">
+                                <span class="text-green-500 text-sm font-medium flex items-center dark:text-green-400">
+                                    <i class="fas fa-arrow-up mr-1"></i> 2 new
+                                </span>
+                                <span class="text-sm text-gray-500 ml-2 dark:text-gray-400">This week</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Upcoming Tests -->
+                    <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 hover-scale animate-slide-up cursor-pointer dark:bg-gray-800">
+                        <div class="flex items-center">
+                            <div class="p-2 sm:p-3 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-400">
+                                <i class="fas fa-calendar-alt text-lg sm:text-xl"></i>
+                            </div>
+                            <div class="ml-3 sm:ml-4">
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Upcoming Tests</p>
+                                <p class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">3</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 sm:mt-4">
+                            <div class="flex items-center">
+                                <span class="text-red-500 text-sm font-medium flex items-center dark:text-red-400">
+                                    <i class="fas fa-clock mr-1"></i> 2 this week
+                                </span>
+                                <span class="text-sm text-gray-500 ml-2 dark:text-gray-400">Next 7 days</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Performance -->
+                    <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 hover-scale animate-slide-up cursor-pointer dark:bg-gray-800">
+                        <div class="flex items-center">
+                            <div class="p-2 sm:p-3 rounded-full bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400">
+                                <i class="fas fa-chart-line text-lg sm:text-xl"></i>
+                            </div>
+                            <div class="ml-3 sm:ml-4">
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Performance</p>
+                                <p class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">85.6%</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 sm:mt-4">
+                            <div class="flex items-center">
+                                <span class="text-green-500 text-sm font-medium flex items-center dark:text-green-400">
+                                    <i class="fas fa-arrow-up mr-1"></i> 2.3%
+                                </span>
+                                <span class="text-sm text-gray-500 ml-2 dark:text-gray-400">vs last month</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Tests Section -->
+            <div class="mt-6 sm:mt-8 px-2 sm:px-6">
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 dark:text-white">Recent Tests</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    <!-- Sample Test Cards -->
+                    <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer dark:bg-gray-800" onclick="viewTestResult('test1')">
+                        <div class="p-4 sm:p-6">
+                            <div class="flex justify-between items-start mb-3 sm:mb-4">
+                                <div>
+                                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Mid-Term Mathematics</h3>
+                                    <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">March 15, 2024</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                                    <i class="fas fa-user-tie mr-2"></i>
+                                    <span>Prof. Johnson</span>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-base sm:text-lg font-bold text-purple-600 dark:text-purple-400">85</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">out of 100</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer dark:bg-gray-800" onclick="viewTestResult('test2')">
+                        <div class="p-4 sm:p-6">
+                            <div class="flex justify-between items-start mb-3 sm:mb-4">
+                                <div>
+                                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Physics Quiz</h3>
+                                    <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">March 10, 2024</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                                    <i class="fas fa-user-tie mr-2"></i>
+                                    <span>Dr. Smith</span>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-base sm:text-lg font-bold text-purple-600 dark:text-purple-400">92</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">out of 100</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Tests Section -->
+            <section id="upcoming-tests" class="mt-8 sm:mt-10 px-2 sm:px-6">
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 dark:text-white">Upcoming Tests</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    <!-- Upcoming Test Card 1 -->
+                    <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 dark:bg-gray-800">
+                        <div class="p-4 sm:p-6">
+                            <div class="flex justify-between items-start mb-3 sm:mb-4">
+                                <div>
+                                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Final Examination - Chemistry</h3>
+                                    <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">April 15, 2024</p>
+                                </div>
+                                <div class="bg-red-100 text-red-800 px-2 py-1 rounded-lg text-xs font-medium dark:bg-red-900 dark:text-red-200">
+                                    3 days left
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                                    <i class="fas fa-user-tie mr-2"></i>
+                                    <span>Dr. Williams</span>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">9:00 AM - 12:00 PM</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Room 302</p>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                                    <div class="bg-red-500 h-1.5 rounded-full" style="width: 85%"></div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1 text-right dark:text-gray-400">Preparation: 85%</p>
+                            </div>
+                            <div class="mt-3">
+                                <a href="#" class="text-sm text-purple-600 hover:text-purple-800 font-medium dark:text-purple-400 dark:hover:text-purple-300">
+                                    <i class="fas fa-book-open mr-1"></i> View Syllabus
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Test Card 2 -->
+                    <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 dark:bg-gray-800">
+                        <div class="p-4 sm:p-6">
+                            <div class="flex justify-between items-start mb-3 sm:mb-4">
+                                <div>
+                                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Unit Test - Computer Science</h3>
+                                    <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">April 22, 2024</p>
+                                </div>
+                                <div class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-lg text-xs font-medium dark:bg-yellow-900 dark:text-yellow-200">
+                                    10 days left
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                                    <i class="fas fa-user-tie mr-2"></i>
+                                    <span>Prof. Roberts</span>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">2:00 PM - 4:00 PM</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Lab 201</p>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                                    <div class="bg-yellow-500 h-1.5 rounded-full" style="width: 45%"></div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1 text-right dark:text-gray-400">Preparation: 45%</p>
+                            </div>
+                            <div class="mt-3">
+                                <a href="#" class="text-sm text-purple-600 hover:text-purple-800 font-medium dark:text-purple-400 dark:hover:text-purple-300">
+                                    <i class="fas fa-book-open mr-1"></i> View Syllabus
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Test Card 3 -->
+                    <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 dark:bg-gray-800">
+                        <div class="p-4 sm:p-6">
+                            <div class="flex justify-between items-start mb-3 sm:mb-4">
+                                <div>
+                                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Final Examination - English</h3>
+                                    <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">April 28, 2024</p>
+                                </div>
+                                <div class="bg-green-100 text-green-800 px-2 py-1 rounded-lg text-xs font-medium dark:bg-green-900 dark:text-green-200">
+                                    16 days left
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                                    <i class="fas fa-user-tie mr-2"></i>
+                                    <span>Ms. Patterson</span>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">10:00 AM - 12:00 PM</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Room 105</p>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                                    <div class="bg-green-500 h-1.5 rounded-full" style="width: 20%"></div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1 text-right dark:text-gray-400">Preparation: 20%</p>
+                            </div>
+                            <div class="mt-3">
+                                <a href="#" class="text-sm text-purple-600 hover:text-purple-800 font-medium dark:text-purple-400 dark:hover:text-purple-300">
+                                    <i class="fas fa-book-open mr-1"></i> View Syllabus
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Submissions Section -->
+            <section id="submissions" class="mt-8 sm:mt-10 px-2 sm:px-6">
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 dark:text-white">My Submissions</h2>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-700">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Exam</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Subject</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Due Date</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                                <!-- Mid-Term Mathematics -->
+                                <tr>
+                                    <td class="px-4 py-4">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100">Mid-Term Examination</div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">Duration: 3 hours</div>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="text-sm text-gray-900 dark:text-gray-100">Mathematics</span>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="text-sm text-gray-900 dark:text-gray-100">March 15, 2024</span>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                            Completed & Submitted
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <a href="result-view.html" class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300">
+                                            View Result
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                <!-- Physics Quiz -->
+                                <tr>
+                                    <td class="px-4 py-4">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100">Quiz</div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">Duration: 45 minutes</div>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="text-sm text-gray-900 dark:text-gray-100">Physics</span>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="text-sm text-gray-900 dark:text-gray-100">March 20, 2024</span>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                            Completed (Pending Submission)
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <button class="text-white bg-purple-600 hover:bg-purple-700 px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200">
+                                            Submit Now
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Chemistry Final -->
+                                <tr>
+                                    <td class="px-4 py-4">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100">Final Examination</div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">Duration: 3 hours</div>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="text-sm text-gray-900 dark:text-gray-100">Chemistry</span>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="text-sm text-gray-900 dark:text-gray-100">March 25, 2024</span>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                                            Not Started
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <button class="text-white bg-purple-600 hover:bg-purple-700 px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200" disabled>
+                                            Start Exam
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Computer Science Project -->
+                                <tr>
+                                    <td class="px-4 py-4">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100">Practical Exam</div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">Duration: 2 hours</div>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="text-sm text-gray-900 dark:text-gray-100">Computer Science</span>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="text-sm text-gray-900 dark:text-gray-100">March 18, 2024</span>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200">
+                                            In Progress
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <button class="text-white bg-purple-600 hover:bg-purple-700 px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200">
+                                            Continue Exam
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- English Mid-Term -->
+                                <tr>
+                                    <td class="px-4 py-4">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100">Mid-Term Examination</div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">Duration: 2 hours</div>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="text-sm text-gray-900 dark:text-gray-100">English</span>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="text-sm text-gray-900 dark:text-gray-100">March 12, 2024</span>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                            Completed & Submitted
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <a href="result-view.html" class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300">
+                                            View Result
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Test Details Modal -->
+            <div id="testDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 overflow-y-auto">
+                <div class="flex items-center justify-center min-h-screen px-2 sm:px-4 py-4 sm:py-8">
+                    <div class="bg-white rounded-xl max-w-4xl w-full mx-auto dark:bg-gray-800">
+                        <div class="p-4 sm:p-6">
+                            <!-- Header with Test Name -->
+                            <div class="flex justify-between items-start mb-4 sm:mb-6">
+                                <div>
+                                    <h3 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white" id="modalTestTitle">Test Details</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400" id="modalTestSubject">Subject Name</p>
+                                </div>
+                                <button onclick="closeTestDetails()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="space-y-4 sm:space-y-6">
+                                <!-- Key Information Grid -->
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 bg-purple-50 p-3 sm:p-4 rounded-lg dark:bg-purple-900/30">
+                                    <div class="text-center p-2 sm:p-3">
+                                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Date of Test</p>
+                                        <p class="text-sm sm:text-base font-medium text-purple-900 dark:text-purple-200" id="modalTestDate">March 15, 2024</p>
+                                    </div>
+                                    <div class="text-center p-2 sm:p-3">
+                                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Teacher</p>
+                                        <p class="text-sm sm:text-base font-medium text-purple-900 dark:text-purple-200" id="modalTestProfessor">Prof. Johnson</p>
+                                    </div>
+                                    <div class="text-center p-2 sm:p-3">
+                                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Total Marks</p>
+                                        <p class="text-sm sm:text-base font-medium text-purple-900 dark:text-purple-200" id="modalTestScore">85/100</p>
+                                    </div>
+                                </div>
+
+                                <!-- Test Papers Section -->
+                                <div class="space-y-3 sm:space-y-4">
+                                    <h4 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Test Papers</h4>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                        <!-- Question Paper -->
+                                        <div class="border rounded-lg p-3 sm:p-4 dark:border-gray-700">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-file-pdf text-red-500 text-xl sm:text-2xl mr-2 sm:mr-3"></i>
+                                                    <div>
+                                                        <p class="text-xs sm:text-sm font-medium dark:text-gray-200" id="modalQuestionPaperName">Question Paper</p>
+                                                        <p class="text-xs text-gray-500 dark:text-gray-400" id="modalQuestionPaperSize">2.5 MB</p>
+                                                    </div>
+                                                </div>
+                                                <button class="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300" id="downloadQuestionPaper">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- Answer Sheet -->
+                                        <div class="border rounded-lg p-3 sm:p-4 dark:border-gray-700">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-file-pdf text-blue-500 text-xl sm:text-2xl mr-2 sm:mr-3"></i>
+                                                    <div>
+                                                        <p class="text-xs sm:text-sm font-medium dark:text-gray-200" id="modalAnswerSheetName">Answer Sheet</p>
+                                                        <p class="text-xs text-gray-500 dark:text-gray-400" id="modalAnswerSheetSize">3.1 MB</p>
+                                                    </div>
+                                                </div>
+                                                <button class="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300" id="downloadAnswerSheet">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Performance Analysis -->
+                                <div class="space-y-3 sm:space-y-4">
+                                    <h4 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Performance Analysis</h4>
+                                    
+                                    <!-- Score Distribution -->
+                                    <div class="bg-gray-50 p-3 sm:p-4 rounded-lg dark:bg-gray-700">
+                                        <h5 class="font-medium text-gray-700 dark:text-gray-200 mb-2 sm:mb-3">Score Distribution</h5>
+                                        <div class="space-y-2 sm:space-y-3">
+                                            <div>
+                                                <div class="flex justify-between mb-1">
+                                                    <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Multiple Choice Questions</span>
+                                                    <span class="text-xs sm:text-sm font-medium text-purple-600 dark:text-purple-400" id="mcqScore">45/50</span>
+                                                </div>
+                                                <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-600">
+                                                    <div class="bg-purple-600 h-2 rounded-full dark:bg-purple-400" id="mcqProgress"></div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="flex justify-between mb-1">
+                                                    <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Problem Solving</span>
+                                                    <span class="text-xs sm:text-sm font-medium text-purple-600 dark:text-purple-400" id="problemSolvingScore">40/50</span>
+                                                </div>
+                                                <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-600">
+                                                    <div class="bg-purple-600 h-2 rounded-full dark:bg-purple-400" id="problemSolvingProgress"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Question Details Section -->
+                                    <div class="bg-gray-50 p-3 sm:p-4 rounded-lg dark:bg-gray-700">
+                                        <h5 class="font-medium text-gray-700 dark:text-gray-200 mb-2 sm:mb-3">Question Details</h5>
+                                        <div class="space-y-3">
+                                            <!-- Question 1 -->
+                                            <div>
+                                                <div class="flex justify-between items-center mb-1 cursor-pointer question-toggle" data-target="question1-details">
+                                                    <div class="flex items-center">
+                                                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Question 1</span>
+                                                        <i class="fas fa-chevron-down ml-2 text-xs text-gray-500 dark:text-gray-400 transition-transform duration-300"></i>
+                                                    </div>
+                                                    <span class="text-xs sm:text-sm font-medium text-purple-600 dark:text-purple-400">18/20</span>
+                                                </div>
+                                                <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-600">
+                                                    <div class="bg-green-500 h-2 rounded-full" style="width: 90%"></div>
+                                                </div>
+                                                <div id="question1-details" class="mt-2 bg-gray-100 dark:bg-gray-600 rounded p-3 text-xs sm:text-sm text-gray-600 dark:text-gray-300 hidden">
+                                                    <p>Your answer correctly identified all the key concepts in the question. You demonstrated excellent understanding of calculus fundamentals and applied the right formulas.</p>
+                                                    <p class="mt-2 font-semibold">Why you lost 2 points:</p>
+                                                    <ul class="list-disc pl-5 mt-1">
+                                                        <li>Minor error in the final calculation (-1)</li>
+                                                        <li>Missing explanation for the limit approach (-1)</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Question 2 -->
+                                            <div>
+                                                <div class="flex justify-between items-center mb-1 cursor-pointer question-toggle" data-target="question2-details">
+                                                    <div class="flex items-center">
+                                                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Question 2</span>
+                                                        <i class="fas fa-chevron-down ml-2 text-xs text-gray-500 dark:text-gray-400 transition-transform duration-300"></i>
+                                                    </div>
+                                                    <span class="text-xs sm:text-sm font-medium text-purple-600 dark:text-purple-400">15/20</span>
+                                                </div>
+                                                <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-600">
+                                                    <div class="bg-green-500 h-2 rounded-full" style="width: 75%"></div>
+                                                </div>
+                                                <div id="question2-details" class="mt-2 bg-gray-100 dark:bg-gray-600 rounded p-3 text-xs sm:text-sm text-gray-600 dark:text-gray-300 hidden">
+                                                    <p>Your approach to solving the complex equation was mostly correct. You identified the right method and set up the solution well.</p>
+                                                    <p class="mt-2 font-semibold">Why you lost 5 points:</p>
+                                                    <ul class="list-disc pl-5 mt-1">
+                                                        <li>Error in algebraic simplification (-2)</li>
+                                                        <li>Incorrect application of the formula in step 3 (-2)</li>
+                                                        <li>Missing units in final answer (-1)</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Question 3 -->
+                                            <div>
+                                                <div class="flex justify-between items-center mb-1 cursor-pointer question-toggle" data-target="question3-details">
+                                                    <div class="flex items-center">
+                                                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Question 3</span>
+                                                        <i class="fas fa-chevron-down ml-2 text-xs text-gray-500 dark:text-gray-400 transition-transform duration-300"></i>
+                                                    </div>
+                                                    <span class="text-xs sm:text-sm font-medium text-purple-600 dark:text-purple-400">12/20</span>
+                                                </div>
+                                                <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-600">
+                                                    <div class="bg-yellow-500 h-2 rounded-full" style="width: 60%"></div>
+                                                </div>
+                                                <div id="question3-details" class="mt-2 bg-gray-100 dark:bg-gray-600 rounded p-3 text-xs sm:text-sm text-gray-600 dark:text-gray-300 hidden">
+                                                    <p>Your understanding of the core concept was present, but the explanation lacked depth and the application had significant errors.</p>
+                                                    <p class="mt-2 font-semibold">Why you lost 8 points:</p>
+                                                    <ul class="list-disc pl-5 mt-1">
+                                                        <li>Incomplete explanation of the theorem (-3)</li>
+                                                        <li>Wrong approach to solving the second part (-3)</li>
+                                                        <li>Missing several steps in your solution (-2)</li>
+                                                    </ul>
+                                                    <p class="mt-2 text-purple-600 dark:text-purple-400 font-medium">Suggestion: Review Chapter 4, pages 78-92 for this concept.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Comparison Stats -->
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                                        <div class="bg-purple-50 p-3 sm:p-4 rounded-lg text-center dark:bg-purple-900/30">
+                                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Your Score</p>
+                                            <p class="text-xl sm:text-2xl font-bold text-purple-600 dark:text-purple-400" id="yourScore">85%</p>
+                                        </div>
+                                        <div class="bg-purple-50 p-3 sm:p-4 rounded-lg text-center dark:bg-purple-900/30">
+                                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Class Average</p>
+                                            <p class="text-xl sm:text-2xl font-bold text-purple-600 dark:text-purple-400" id="classAverage">78%</p>
+                                        </div>
+                                        <div class="bg-purple-50 p-3 sm:p-4 rounded-lg text-center dark:bg-purple-900/30">
+                                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Highest Score</p>
+                                            <p class="text-xl sm:text-2xl font-bold text-purple-600 dark:text-purple-400" id="highestScore">95%</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Areas for Improvement -->
+                                    <div class="bg-gray-50 p-3 sm:p-4 rounded-lg dark:bg-gray-700">
+                                        <h5 class="font-medium text-gray-700 dark:text-gray-200 mb-2">Areas for Improvement</h5>
+                                        <ul class="list-disc list-inside text-xs sm:text-sm text-gray-600 dark:text-gray-300 space-y-1" id="improvementAreas"></ul>
+                                    </div>
+                                </div>
+
+                                <!-- Review Options -->
+                                <div class="border-t pt-4 sm:pt-6 dark:border-gray-700">
+                                    <h4 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">Request Review</h4>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                        <div class="border rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow dark:border-gray-700 dark:hover:bg-gray-700">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <h5 class="font-medium text-gray-900 dark:text-white">Recheck</h5>
+                                                    <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">Basic review of marking</p>
+                                                    <p class="text-base sm:text-lg font-bold text-purple-600 dark:text-purple-400 mt-2">₹150</p>
+                                                </div>
+                                                <button onclick="requestReview('recheck')" class="px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200 dark:bg-purple-500 dark:hover:bg-purple-600 text-sm sm:text-base">
+                                                    Request
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="border rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow dark:border-gray-700 dark:hover:bg-gray-700">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <h5 class="font-medium text-gray-900 dark:text-white">Reassessment</h5>
+                                                    <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">Complete paper reassessment</p>
+                                                    <p class="text-base sm:text-lg font-bold text-purple-600 dark:text-purple-400 mt-2">₹250</p>
+                                                </div>
+                                                <button onclick="requestReview('reassessment')" class="px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200 dark:bg-purple-500 dark:hover:bg-purple-600 text-sm sm:text-base">
+                                                    Request
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal" style="display: none;">
+        <div class="modal-content max-w-2xl bg-white dark:bg-gray-800 shadow-xl rounded-lg">
+            <span class="close text-gray-700 dark:text-gray-300" id="closeSettingsModal">&times;</span>
+            <h2 class="modal-title text-gray-900 dark:text-white">Settings</h2>
+            
+            <div class="mt-6 space-y-6">
+                <!-- Profile Settings -->
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Profile Settings</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Profile Picture</label>
+                            <div class="flex items-center space-x-4">
+                                <div class="relative">
+                                    <img id="settings-profile-photo" src="assets/images/default-profile.png" alt="Profile" class="h-16 w-16 rounded-full object-cover border-2 border-purple-200 dark:border-purple-800">
+                                    <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 hover:opacity-100 transition-opacity duration-200">
+                                        <i class="fas fa-camera text-white text-xl"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <label for="profile-photo-upload" class="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                                        <i class="fas fa-upload mr-2"></i> Upload New Photo
+                                    </label>
+                                    <input id="profile-photo-upload" type="file" class="hidden" accept="image/*">
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">JPG, PNG or GIF (MAX. 2MB)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="display-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Display Name</label>
+                            <input type="text" id="display-name" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-gray-100" value="John Doe">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                            <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-gray-100" value="john.doe@example.com">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification Settings -->
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Notification Settings</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700 dark:text-gray-300">Email Notifications</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700 dark:text-gray-300">SMS Notifications</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme Settings -->
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Theme Settings</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700 dark:text-gray-300">Dark Mode</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="theme-toggle-settings" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700 dark:text-gray-300">Colorblind Mode</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy Settings -->
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Privacy Settings</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700 dark:text-gray-300">Show My Profile to Other Students</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <div class="flex justify-end">
+                    <button class="px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors duration-200">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script>
+        // Mobile menu functionality
+        const mobileMenuButton = document.querySelector('.mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+
+        // Close mobile menu when clicking a link
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                
+                // Scroll smoothly to section if it's an anchor link
+                if (link.getAttribute('href').startsWith('#')) {
+                    const targetId = link.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        event.preventDefault();
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+        
+        // Handle smooth scrolling for desktop menu links
+        document.querySelectorAll('.hidden.md\\:ml-6 a[href^="#"]').forEach(link => {
+            link.addEventListener('click', function(event) {
+                if (this.getAttribute('href').startsWith('#')) {
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        event.preventDefault();
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('vidyaeval-theme');
+        if (savedTheme) {
+            htmlElement.classList.add(savedTheme);
+            updateThemeIcon(savedTheme === 'dark');
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            htmlElement.classList.add('dark');
+            updateThemeIcon(true);
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            const isDark = htmlElement.classList.contains('dark');
+            htmlElement.classList.toggle('dark');
+            updateThemeIcon(!isDark);
+            localStorage.setItem('vidyaeval-theme', isDark ? 'light' : 'dark');
+        });
+        
+        function updateThemeIcon(isDark) {
+            const moonIcon = themeToggle.querySelector('.fa-moon');
+            const sunIcon = themeToggle.querySelector('.fa-sun');
+            
+            if (isDark) {
+                moonIcon.style.display = 'none';
+                sunIcon.style.display = 'block';
+                themeToggle.classList.remove('bg-indigo-700', 'text-white', 'hover:bg-indigo-600');
+                themeToggle.classList.add('bg-yellow-300', 'text-yellow-800', 'hover:bg-yellow-200');
+            } else {
+                moonIcon.style.display = 'block';
+                sunIcon.style.display = 'none';
+                themeToggle.classList.remove('bg-yellow-300', 'text-yellow-800', 'hover:bg-yellow-200');
+                themeToggle.classList.add('bg-indigo-700', 'text-white', 'hover:bg-indigo-600');
+            }
+        }
+
+        // User menu dropdown functionality
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userDropdown = document.getElementById('user-dropdown');
+
+        // Toggle dropdown
+        userMenuButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!userMenuButton.contains(event.target) && !userDropdown.contains(event.target)) {
+                userDropdown.classList.add('hidden');
+            }
+        });
+
+        // Prevent dropdown from closing when clicking inside it
+        userDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Check authentication state
+        firebase.auth().onAuthStateChanged(async (user) => {
+            if (!user) {
+                // If not logged in, redirect to login page
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Get user data from Firestore
+            const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+            const userData = userDoc.data();
+
+            // Verify user is a student
+            if (userData.role !== 'student') {
+                window.location.href = 'teacher-dashboard.html';
+                return;
+            }
+
+            // Update UI with user data
+            document.getElementById('student-name').textContent = userData.fullName;
+            document.getElementById('welcome-student-name').textContent = userData.fullName;
+            document.getElementById('student-id').textContent = userData.studentId || 'Not Assigned';
+        });
+
+        // Handle logout
+        document.getElementById('logout-button').addEventListener('click', (e) => {
+            e.preventDefault();
+            firebase.auth().signOut().then(() => {
+                window.location.href = 'index.html';
+            });
+        });
+
+        // Function to view test result (redirects to result-view.html)
+        function viewTestResult(testId) {
+            try {
+                // Get the test data
+                const test = testData[testId];
+                if (!test) {
+                    console.error('Test data not found for ID:', testId);
+                    // Use default test data if not found
+                    const defaultTest = {
+                        title: 'Mid-Term Mathematics',
+                        date: 'March 15, 2024',
+                        score: '85/100',
+                        subject: 'Mathematics',
+                        professor: 'Prof. Johnson',
+                        multipleChoice: '45/50',
+                        problemSolving: '40/50',
+                        questionPaper: {
+                            name: 'Mathematics_Mid_Term_2024.pdf',
+                            size: '2.5 MB'
+                        },
+                        answerSheet: {
+                            name: 'Mathematics_Mid_Term_Answer_2024.pdf',
+                            size: '3.1 MB'
+                        },
+                        performance: {
+                            yourScore: '85%',
+                            classAverage: '78%',
+                            highestScore: '95%',
+                            improvementAreas: [
+                                'Focus on complex problem-solving questions',
+                                'Review Chapter 4: Calculus fundamentals',
+                                'Practice more time-management during tests'
+                            ]
+                        }
+                    };
+                    // Store default test data
+                    localStorage.setItem('currentTestId', 'default');
+                    localStorage.setItem('currentTestData', JSON.stringify(defaultTest));
+                    // Redirect to result-view.html with a default parameter
+                    window.location.href = 'result-view.html?testId=default';
+                    return;
+                }
+                
+                // Store the test data in localStorage for access in result-view.html
+                localStorage.setItem('currentTestId', testId);
+                localStorage.setItem('currentTestData', JSON.stringify(test));
+                
+                // Redirect to result-view.html with the test ID as a parameter
+                window.location.href = `result-view.html?testId=${testId}`;
+            } catch (error) {
+                console.error('Error navigating to results view:', error);
+                // Redirect to result-view.html with a fallback parameter
+                window.location.href = 'result-view.html?testId=fallback';
+            }
+        }
+
+        // Test details functionality
+        const testData = {
+            test1: {
+                title: 'Mid-Term Mathematics',
+                date: 'March 15, 2024',
+                score: '85/100',
+                subject: 'Mathematics',
+                professor: 'Prof. Johnson',
+                multipleChoice: '45/50',
+                problemSolving: '40/50',
+                questionPaper: {
+                    name: 'Mathematics_Mid_Term_2024.pdf',
+                    size: '2.5 MB'
+                },
+                answerSheet: {
+                    name: 'Mathematics_Mid_Term_Answer_2024.pdf',
+                    size: '3.1 MB'
+                },
+                performance: {
+                    yourScore: '85%',
+                    classAverage: '78%',
+                    highestScore: '95%',
+                    improvementAreas: [
+                        'Focus on complex problem-solving questions',
+                        'Review Chapter 4: Calculus fundamentals',
+                        'Practice more time-management during tests'
+                    ]
+                }
+            },
+            test2: {
+                title: 'Physics Quiz',
+                date: 'March 10, 2024',
+                score: '92/100',
+                subject: 'Physics',
+                professor: 'Dr. Smith',
+                multipleChoice: '48/50',
+                problemSolving: '44/50',
+                questionPaper: {
+                    name: 'Physics_Quiz_2024.pdf',
+                    size: '1.8 MB'
+                },
+                answerSheet: {
+                    name: 'Physics_Quiz_Answer_2024.pdf',
+                    size: '2.2 MB'
+                },
+                performance: {
+                    yourScore: '92%',
+                    classAverage: '82%',
+                    highestScore: '96%',
+                    improvementAreas: [
+                        'Review advanced quantum mechanics concepts',
+                        'Practice numerical problem solving',
+                        'Work on diagram-based questions'
+                    ]
+                }
+            }
+        };
+
+        function showTestDetails(testId) {
+            const test = testData[testId];
+            
+            // Update basic information
+            document.getElementById('modalTestTitle').textContent = test.title;
+            document.getElementById('modalTestSubject').textContent = test.subject;
+            document.getElementById('modalTestDate').textContent = test.date;
+            document.getElementById('modalTestScore').textContent = test.score;
+            document.getElementById('modalTestProfessor').textContent = test.professor;
+            
+            // Update question paper and answer sheet
+            document.getElementById('modalQuestionPaperName').textContent = test.questionPaper.name;
+            document.getElementById('modalQuestionPaperSize').textContent = test.questionPaper.size;
+            document.getElementById('modalAnswerSheetName').textContent = test.answerSheet.name;
+            document.getElementById('modalAnswerSheetSize').textContent = test.answerSheet.size;
+            
+            // Update performance metrics
+            document.getElementById('mcqScore').textContent = test.multipleChoice;
+            document.getElementById('problemSolvingScore').textContent = test.problemSolving;
+            
+            // Calculate and update progress bars
+            const mcqPercentage = (parseInt(test.multipleChoice) / 50) * 100;
+            const problemSolvingPercentage = (parseInt(test.problemSolving) / 50) * 100;
+            document.getElementById('mcqProgress').style.width = `${mcqPercentage}%`;
+            document.getElementById('problemSolvingProgress').style.width = `${problemSolvingPercentage}%`;
+            
+            // Update comparison stats
+            document.getElementById('yourScore').textContent = test.performance.yourScore;
+            document.getElementById('classAverage').textContent = test.performance.classAverage;
+            document.getElementById('highestScore').textContent = test.performance.highestScore;
+            
+            // Update improvement areas
+            const improvementList = document.getElementById('improvementAreas');
+            improvementList.innerHTML = test.performance.improvementAreas
+                .map(area => `<li>${area}</li>`)
+                .join('');
+            
+            // Show modal
+            document.getElementById('testDetailsModal').classList.remove('hidden');
+            
+            // Setup question toggles after modal is visible
+            setTimeout(setupQuestionToggles, 100);
+        }
+
+        // Add download handlers
+        document.getElementById('downloadQuestionPaper').addEventListener('click', function() {
+            alert('Downloading question paper...');
+            // Add actual download functionality here
+        });
+
+        document.getElementById('downloadAnswerSheet').addEventListener('click', function() {
+            alert('Downloading answer sheet...');
+            // Add actual download functionality here
+        });
+
+        function closeTestDetails() {
+            document.getElementById('testDetailsModal').classList.add('hidden');
+        }
+
+        function requestReview(type) {
+            const price = type === 'recheck' ? 150 : 250;
+            const confirmMsg = `Are you sure you want to request a ${type} for ₹${price}?`;
+            
+            if (confirm(confirmMsg)) {
+                // Here you would typically make an API call to your backend
+                alert(`${type} request submitted successfully! You will be redirected to payment.`);
+                // Add payment gateway integration here
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('testDetailsModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeTestDetails();
+            }
+        });
+
+        // Question details toggle functionality
+        const setupQuestionToggles = () => {
+            const questionToggles = document.querySelectorAll('.question-toggle');
+            
+            questionToggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const targetElement = document.getElementById(targetId);
+                    const icon = this.querySelector('i');
+                    
+                    // Toggle display of details
+                    if (targetElement.classList.contains('hidden')) {
+                        targetElement.classList.remove('hidden');
+                        icon.style.transform = 'rotate(-180deg)';
+                    } else {
+                        targetElement.classList.add('hidden');
+                        icon.style.transform = 'rotate(0)';
+                    }
+                });
+            });
+        };
+
+        // Add settings modal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown');
+            const settingsModal = document.getElementById('settings-modal');
+            const settingsButton = document.getElementById('settings-button');
+            const closeSettingsModal = document.getElementById('closeSettingsModal');
+            const themeToggleSettings = document.getElementById('theme-toggle-settings');
+            const htmlElement = document.documentElement;
+            
+            // Toggle dropdown
+            userMenuButton.addEventListener('click', function() {
+                userDropdown.classList.toggle('hidden');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!userMenuButton.contains(event.target) && !userDropdown.contains(event.target)) {
+                    userDropdown.classList.add('hidden');
+                }
+            });
+            
+            // Settings modal functionality - Fixed and enhanced
+            if (settingsButton && settingsModal && closeSettingsModal) {
+                console.log("Settings button found: ", settingsButton);
+                
+                settingsButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log("Settings button clicked");
+                    settingsModal.style.display = 'block';
+                    userDropdown.classList.add('hidden');
+                });
+                
+                closeSettingsModal.addEventListener('click', function() {
+                    settingsModal.style.display = 'none';
+                });
+                
+                // Close settings modal when clicking outside
+                window.addEventListener('click', function(event) {
+                    if (event.target === settingsModal) {
+                        settingsModal.style.display = 'none';
+                    }
+                });
+            } else {
+                console.error("Settings elements not found:", { 
+                    settingsButton: !!settingsButton, 
+                    settingsModal: !!settingsModal, 
+                    closeSettingsModal: !!closeSettingsModal 
+                });
+            }
+            
+            // Theme toggle in settings
+            themeToggleSettings.checked = htmlElement.classList.contains('dark');
+            
+            themeToggleSettings.addEventListener('change', function() {
+                if (this.checked) {
+                    htmlElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    htmlElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+            
+            // Profile photo handling
+            const settingsProfilePhoto = document.getElementById('settings-profile-photo');
+            const profilePhotoUpload = document.getElementById('profile-photo-upload');
+            const navbarProfilePhoto = document.getElementById('navbar-profile-photo');
+            
+            // Function to update profile photo everywhere
+            function updateProfilePhoto(photoUrl) {
+                const defaultPhoto = 'assets/images/default-profile.png';
+                const photoSrc = photoUrl || defaultPhoto;
+                settingsProfilePhoto.src = photoSrc;
+                navbarProfilePhoto.src = photoSrc;
+                localStorage.setItem('profilePhoto', photoUrl);
+            }
+            
+            // Get profile photo from localStorage if exists
+            const savedPhoto = localStorage.getItem('profilePhoto');
+            if (savedPhoto) {
+                updateProfilePhoto(savedPhoto);
+            }
+            
+            // Handle profile photo upload
+            profilePhotoUpload.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+                    
+                    // Check file size (2MB limit)
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert('File size must be less than 2MB');
+                        return;
+                    }
+                    
+                    // Check file type
+                    if (!file.type.startsWith('image/')) {
+                        alert('Please upload an image file');
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        updateProfilePhoto(e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Preview hover effect for profile photo
+            settingsProfilePhoto.addEventListener('mouseenter', function() {
+                this.parentElement.querySelector('.absolute').classList.remove('opacity-0');
+            });
+            
+            settingsProfilePhoto.addEventListener('mouseleave', function() {
+                this.parentElement.querySelector('.absolute').classList.add('opacity-0');
+            });
+        });
+    </script>
+    
+    <!-- Extra script to ensure settings button works -->
+    <script>
+        // Make sure settings button works immediately after page load
+        window.addEventListener('load', function() {
+            const settingsButton = document.getElementById('settings-button');
+            const settingsModal = document.getElementById('settings-modal');
+            const closeSettingsModal = document.getElementById('closeSettingsModal');
+            const userDropdown = document.getElementById('user-dropdown');
+            
+            if (settingsButton && settingsModal && closeSettingsModal) {
+                // Remove any existing event listeners
+                const newSettingsButton = settingsButton.cloneNode(true);
+                settingsButton.parentNode.replaceChild(newSettingsButton, settingsButton);
+                
+                // Add new event listener
+                newSettingsButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Settings button clicked directly');
+                    settingsModal.style.display = 'block';
+                    if (userDropdown) {
+                        userDropdown.classList.add('hidden');
+                    }
+                });
+                
+                // Ensure close button works
+                closeSettingsModal.addEventListener('click', function() {
+                    settingsModal.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidhyaEval - Batch Details</title>
+    <link rel="icon" type="image/png" href="/static/VidhyEval_logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        purple: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-white dark:bg-gray-800 shadow-md fixed top-0 w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="teacher-dashboard">
+                            <img class="h-8 w-auto" src="/static/VidhyEval_logo.png" alt="VidhyaEval Logo">
+                        </a>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="teacher-dashboard" class="border-purple-500 text-gray-900 dark:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Dashboard
+                        </a>
+                        <a href="teacher-dashboard.html#assigned-batches" class="border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white hover:border-gray-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Batches
+                        </a>
+                        <a href="teacher-dashboard.html#results-section" class="border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white hover:border-gray-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Results
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    <div class="ml-3 relative">
+                        <div>
+                            <button id="user-menu-button" class="bg-white dark:bg-gray-800 rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500" id="user-menu" aria-expanded="false" aria-haspopup="true">
+                                <span class="sr-only">Open user menu</span>
+                                <div class="h-8 w-8 rounded-full bg-purple-200 dark:bg-purple-600 flex items-center justify-center text-purple-600 dark:text-purple-200">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </button>
+                        </div>
+                        <div id="user-dropdown" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none hidden" role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem">Your Profile</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem">Settings</a>
+                            <button id="logout-btn" class="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem">Sign out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 mt-16">
+        <!-- Back button and title -->
+        <div class="px-4 sm:px-0 mb-6 flex items-center">
+            <a href="teacher-dashboard" class="inline-flex items-center mr-4 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+            </a>
+            <h1 id="batch-title" class="text-2xl font-semibold text-gray-900 dark:text-white">{{ batch.batch_number }}</h1>
+        </div>
+
+        <!-- Batch Information Card -->
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-6 overflow-hidden">
+            <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                <div class="flex flex-col md:flex-row md:justify-between md:items-center">
+                    <div>
+                        <h2 id="exam-type" class="text-xl font-semibold text-gray-900 dark:text-white">{{ batch.course_name }} - {{ batch.subject }}</h2>
+                        <p id="batch-info" class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ batch.class }} | {{ batch.batch_number }}</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 flex items-center">
+                        <span id="batch-status" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
+                        {% if batch.status == 'completed' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                        {% elif batch.status == 'in_progress' %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                        {% else %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200{% endif %}">
+                        {{ batch.status | capitalize }}
+                    </span>
+                    </div>
+                </div>
+            </div>
+            <div class="px-6 py-5">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Assigned On</h3>
+                        <p id="assigned-date" class="text-base font-medium text-gray-900 dark:text-white">
+                            {{ batch.created_at.strftime('%b %d, %Y') if batch.created_at else 'N/A' }}
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Due Date</h3>
+                        <p id="due-date" class="text-base font-medium text-gray-900 dark:text-white">
+                            {{ batch.due_date.strftime('%b %d, %Y') if batch.due_date else 'N/A' }}
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Students</h3>
+                        <p id="total-students" class="text-base font-medium text-gray-900 dark:text-white">{{ batch.total_students }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Answer Sheets Table -->
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+            <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h2 class="text-lg font-medium text-gray-900 dark:text-white">Student Answer Sheets</h2>
+                
+                <div class="flex items-center">
+                    <div class="relative mr-4">
+                        <input type="text" id="search-input" placeholder="Search by answer sheet ID" class="pl-4 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm w-60">
+                        <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-900">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-1/12">
+                                S.No
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-2/6">
+                                Answer Sheet
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-1/6">
+                                Status
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-2/6">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="answer-sheets-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        {% for sheet in answer_sheets %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900 dark:text-white w-1/12">
+                                {{ loop.index }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white w-2/6">
+                                {{ sheet.answer_sheet_id }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap w-1/6 text-center">
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold 
+                                    {{ 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' if sheet.status == 'reviewed' else 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' }}">
+                                    {{ sheet.status | capitalize }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-2/6">
+                                <a href="/review-answer-sheet?id={{ sheet.id }}" class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 font-medium transition-colors duration-200">
+                                    {{ 'Review' if sheet.status == 'pending' else 'View' }}
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="no-data-message" class="py-12 text-center {% if answer_sheets %}hidden{% endif %}">                <i class="fas fa-file-alt text-gray-300 dark:text-gray-600 text-5xl mb-4"></i>
+                <p class="text-gray-500 dark:text-gray-400">No answer sheets found for this batch.</p>
+            </div>
+            
+            <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-center">
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                        Showing <span id="showing-count" class="font-medium">{{ answer_sheets|length }}</span> of
+                        <span id="total-count" class="font-medium">{{ answer_sheets|length }}</span> answer sheets                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/auth.js"></script>
+    <script src="/static/teacher.js"></script>
+    <script src="/static/theme.js"></script>
+    <script>            
+            // Initialize search functionality
+            document.getElementById('search-input').addEventListener('input', function() {
+                filterAnswerSheets(this.value.toLowerCase());
+            });
+            
+            // Toggle user dropdown
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown');
+            
+            if (userMenuButton && userDropdown) {
+                userMenuButton.addEventListener('click', function() {
+                    userDropdown.classList.toggle('hidden');
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!userMenuButton.contains(event.target) && !userDropdown.contains(event.target)) {
+                        userDropdown.classList.add('hidden');
+                    }
+                });
+            }
+            
+            // Logout button functionality
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    // Clear user data from localStorage
+                    localStorage.removeItem('userRole');
+                    localStorage.removeItem('userEmail');
+                    
+                    // Redirect to login page
+                    window.location.href = 'index.html?logout=true';
+                });
+            }
+        
+        // Get batch data based on ID
+        function getBatchData(batchId) {
+            // In a real app, this would be an API call
+            // For demo purposes, we'll simulate with hardcoded data
+            const batches = {
+                'BATCH-001': {
+                    id: 'BATCH-001',
+                    examType: 'Mid-Term Examination',
+                    subject: 'Mathematics',
+                    class: 'Class 10-A',
+                    assignedDate: 'Apr 20, 2024',
+                    dueDate: 'Apr 25, 2024',
+                    status: 'Pending',
+                    totalStudents: 32
+                },
+                'BATCH-002': {
+                    id: 'BATCH-002',
+                    examType: 'Final Examination',
+                    subject: 'Computer Science',
+                    class: 'Class 12-A',
+                    assignedDate: 'Apr 10, 2024',
+                    dueDate: 'Apr 20, 2024',
+                    status: 'Completed',
+                    totalStudents: 30
+                },
+                'BATCH-003': {
+                    id: 'BATCH-003',
+                    examType: 'Quiz',
+                    subject: 'Physics',
+                    class: 'Class 11-A',
+                    assignedDate: 'Apr 18, 2024',
+                    dueDate: 'Apr 28, 2024',
+                    status: 'In Progress',
+                    totalStudents: 28
+                },
+                'BATCH-004': {
+                    id: 'BATCH-004',
+                    examType: 'Unit Test',
+                    subject: 'Chemistry',
+                    class: 'Class 12-B',
+                    assignedDate: 'Apr 21, 2024',
+                    dueDate: 'May 1, 2024',
+                    status: 'Pending',
+                    totalStudents: 26
+                },
+                'BATCH-005': {
+                    id: 'BATCH-005',
+                    examType: 'Weekly Test',
+                    subject: 'English Literature',
+                    class: 'Class 11-B',
+                    assignedDate: 'Apr 22, 2024',
+                    dueDate: 'May 3, 2024',
+                    status: 'Pending',
+                    totalStudents: 34
+                },
+                'BATCH-006': {
+                    id: 'BATCH-006',
+                    examType: 'Practical Exam',
+                    subject: 'Biology',
+                    class: 'Class 12-C',
+                    assignedDate: 'Apr 23, 2024',
+                    dueDate: 'May 5, 2024',
+                    status: 'Pending',
+                    totalStudents: 24
+                },
+                'BATCH-007': {
+                    id: 'BATCH-007',
+                    examType: 'Project Evaluation',
+                    subject: 'History',
+                    class: 'Class 10-B',
+                    assignedDate: 'Apr 24, 2024',
+                    dueDate: 'May 7, 2024',
+                    status: 'Pending',
+                    totalStudents: 29
+                },
+                'BATCH-008': {
+                    id: 'BATCH-008',
+                    examType: 'Semester Final',
+                    subject: 'Geography',
+                    class: 'Class 11-C',
+                    assignedDate: 'Apr 25, 2024',
+                    dueDate: 'May 10, 2024',
+                    status: 'Pending',
+                    totalStudents: 31
+                }
+            };
+            
+            return batches[batchId] || {
+                id: batchId,
+                examType: 'Unknown Examination',
+                subject: 'Unknown Subject',
+                class: 'Unknown Class',
+                assignedDate: 'Unknown Date',
+                dueDate: 'Unknown Date',
+                status: 'Unknown',
+                totalStudents: 0
+            };
+        }
+        
+        // Update batch information on the page
+        function updateBatchInfo(batch) {
+            document.title = `VidhyaEval - ${batch.examType} (${batch.id})`;
+            
+            document.getElementById('batch-title').textContent = `Batch Details: ${batch.id}`;
+            document.getElementById('exam-type').textContent = `${batch.examType} - ${batch.subject}`;
+            document.getElementById('batch-info').textContent = `${batch.class} | ${batch.id}`;
+            
+            const statusElem = document.getElementById('batch-status');
+            statusElem.textContent = batch.status;
+            
+            // Update status color based on status
+            if (batch.status === 'Completed') {
+                statusElem.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+            } else if (batch.status === 'In Progress') {
+                statusElem.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+            } else {
+                statusElem.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+            }
+            
+            document.getElementById('assigned-date').textContent = batch.assignedDate;
+            document.getElementById('due-date').textContent = batch.dueDate;
+            document.getElementById('total-students').textContent = batch.totalStudents;
+        }
+        
+        // Load answer sheets for a batch
+        function loadAnswerSheets(batch) {
+            // In a real app, this would be an API call
+            // For demo purposes, we'll generate some dummy data
+            const students = generateDummyStudents(batch);
+            
+            // Update UI
+            updateAnswerSheetsTable(students);
+        }
+        
+        // Generate dummy student data for demo purposes
+        function generateDummyStudents(batch) {
+            const totalStudents = batch.totalStudents;
+            const students = [];
+            
+            // Generate random status distribution based on batch status
+            let reviewedCount = 0;
+            let pendingCount = 0;
+            
+            if (batch.status === 'Completed') {
+                reviewedCount = totalStudents;
+            } else if (batch.status === 'In Progress') {
+                reviewedCount = Math.floor(totalStudents * 0.6); // 60% reviewed
+                pendingCount = totalStudents - reviewedCount;
+            } else {
+                pendingCount = totalStudents;
+            }
+            
+            // Generate students with the appropriate status distribution
+            for (let i = 1; i <= totalStudents; i++) {
+                const rollNumber = `${batch.class.replace('Class ', '')}-${String(i).padStart(2, '0')}`;
+                const studentName = getRandomName();
+                const answerSheetId = `ANS-${batch.id.split('-')[1]}-${String(i).padStart(3, '0')}`;
+                
+                let status = 'Pending';
+                if (reviewedCount > 0) {
+                    status = 'Reviewed';
+                    reviewedCount--;
+                } else if (pendingCount > 0) {
+                    status = 'Pending';
+                    pendingCount--;
+                }
+                
+                students.push({
+                    rollNumber,
+                    studentName,
+                    answerSheetId,
+                    status
+                });
+            }
+            
+            return students;
+        }
+        
+        // Update the answer sheets table with data
+        function updateAnswerSheetsTable(students) {
+            const tableBody = document.getElementById('answer-sheets-body');
+            const noDataMessage = document.getElementById('no-data-message');
+            const showingCount = document.getElementById('showing-count');
+            const totalCount = document.getElementById('total-count');
+            
+            // Clear existing rows
+            tableBody.innerHTML = '';
+            
+            if (students.length === 0) {
+                noDataMessage.classList.remove('hidden');
+                showingCount.textContent = '0';
+                totalCount.textContent = '0';
+                return;
+            }
+            
+            noDataMessage.classList.add('hidden');
+            
+            // Add student rows
+            students.forEach((student, index) => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700';
+                row.setAttribute('data-roll', student.rollNumber.toLowerCase());
+                row.setAttribute('data-name', student.studentName.toLowerCase());
+                row.setAttribute('data-sheet', student.answerSheetId.toLowerCase());
+                
+                const isPending = student.status !== 'Reviewed';
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900 dark:text-white w-1/12">
+                        ${index + 1}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white w-2/6">
+                        ${student.answerSheetId}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap w-1/6 text-center">
+                        <button class="status-btn px-3 py-1 rounded-full text-xs font-semibold min-w-[80px] ${
+                            isPending 
+                                ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-800' 
+                                : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-800'
+                        }" data-status="${isPending ? 'Pending' : 'Reviewed'}" data-id="${student.answerSheetId}">
+                            ${isPending ? 'Pending' : 'Reviewed'}
+                        </button>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-2/6">
+                        <button class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 font-medium transition-colors duration-200 review-btn" data-id="${student.answerSheetId}">
+                            ${isPending ? 'Review' : 'View'}
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Update counters
+            showingCount.textContent = students.length;
+            totalCount.textContent = students.length;
+            
+            // Add event listeners to review buttons
+            document.querySelectorAll('.review-btn').forEach(button => {
+                console.log('Adding event listener to review button:', button);
+                button.addEventListener('click', function() {
+                    console.log('Review button clicked:', this.getAttribute('data-id'));
+                    const answerSheetId = this.getAttribute('data-id');
+                    const row = this.closest('tr');
+                    const status = row.querySelector('.status-btn').getAttribute('data-status');
+                    const studentInfo = getStudentInfoByAnswerSheetId(answerSheetId);
+                    
+                    // Get batch information
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const batchId = urlParams.get('id');
+                    const batchData = getBatchData(batchId);
+                    
+                    console.log('Navigation to result-view.html with params:', {
+                        answerSheetId,
+                        studentName: studentInfo.studentName,
+                        rollNumber: studentInfo.rollNumber,
+                        batchId,
+                        examType: batchData.examType,
+                        subject: batchData.subject,
+                        status,
+                        mode: status === "Pending" ? "review" : "view"
+                    });
+                    
+                    // Create URL with query parameters
+                    try {
+                        // Use relative path instead of URL constructor
+                        let resultViewUrl = "result-view.html";
+                        resultViewUrl += `?answerSheetId=${encodeURIComponent(answerSheetId)}`;
+                        resultViewUrl += `&studentName=${encodeURIComponent(studentInfo.studentName)}`;
+                        resultViewUrl += `&rollNumber=${encodeURIComponent(studentInfo.rollNumber)}`;
+                        resultViewUrl += `&batchId=${encodeURIComponent(batchId)}`;
+                        resultViewUrl += `&examType=${encodeURIComponent(batchData.examType)}`;
+                        resultViewUrl += `&subject=${encodeURIComponent(batchData.subject)}`;
+                        resultViewUrl += `&status=${encodeURIComponent(status)}`;
+                        resultViewUrl += `&mode=${encodeURIComponent(status === "Pending" ? "review" : "view")}`;
+                        
+                        // Navigate to result view page
+                        console.log('Navigating to URL:', resultViewUrl);
+                        window.location.href = resultViewUrl;
+                    } catch (error) {
+                        console.error('Error constructing URL:', error);
+                        alert('There was an error navigating to the result view page. Please try again.');
+                    }
+                });
+            });
+            
+            // Helper function to get student information by answer sheet ID
+            function getStudentInfoByAnswerSheetId(answerSheetId) {
+                // Find the student in the generated students array
+                const student = students.find(s => s.answerSheetId === answerSheetId);
+                return student || { studentName: 'Unknown Student', rollNumber: 'N/A' };
+            }
+            
+            // Add event listeners to status buttons
+            document.querySelectorAll('.status-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const answerSheetId = this.getAttribute('data-id');
+                    const currentStatus = this.getAttribute('data-status');
+                    const newStatus = currentStatus === 'Pending' ? 'Reviewed' : 'Pending';
+                    
+                    // Update button appearance
+                    if (newStatus === 'Reviewed') {
+                        this.classList.remove('bg-red-100', 'text-red-800', 'dark:bg-red-900', 'dark:text-red-200', 'hover:bg-red-200', 'dark:hover:bg-red-800');
+                        this.classList.add('bg-green-100', 'text-green-800', 'dark:bg-green-900', 'dark:text-green-200', 'hover:bg-green-200', 'dark:hover:bg-green-800');
+                    } else {
+                        this.classList.remove('bg-green-100', 'text-green-800', 'dark:bg-green-900', 'dark:text-green-200', 'hover:bg-green-200', 'dark:hover:bg-green-800');
+                        this.classList.add('bg-red-100', 'text-red-800', 'dark:bg-red-900', 'dark:text-red-200', 'hover:bg-red-200', 'dark:hover:bg-red-800');
+                    }
+                    
+                    // Update button text and data attribute
+                    this.textContent = newStatus;
+                    this.setAttribute('data-status', newStatus);
+                    
+                    // Update corresponding review button text
+                    const reviewBtn = this.closest('tr').querySelector('.review-btn');
+                    if (reviewBtn) {
+                        reviewBtn.textContent = newStatus === 'Reviewed' ? 'View' : 'Review';
+                    }
+                    
+                    // Update batch status based on all answer sheets
+                    updateBatchStatus();
+                    
+                    // In a real app, you would save this status change to the server
+                    console.log(`Status of ${answerSheetId} changed to ${newStatus}`);
+                });
+            });
+            
+            // Ensure the batch status is updated initially after loading all sheets
+            updateBatchStatus();
+        }
+        
+        // Update batch status based on all answer sheets
+        function updateBatchStatus() {
+            const statusButtons = document.querySelectorAll('.status-btn');
+            const totalSheets = statusButtons.length;
+            let reviewedCount = 0;
+            let pendingCount = 0;
+            
+            // Count reviewed and pending sheets
+            statusButtons.forEach(button => {
+                if (button.getAttribute('data-status') === 'Reviewed') {
+                    reviewedCount++;
+                } else {
+                    pendingCount++;
+                }
+            });
+            
+            // Determine batch status
+            let newBatchStatus;
+            if (reviewedCount === totalSheets) {
+                newBatchStatus = 'Completed';
+            } else if (pendingCount === totalSheets) {
+                newBatchStatus = 'Pending';
+            } else {
+                newBatchStatus = 'In Progress';
+            }
+            
+            // Update UI
+            const statusElem = document.getElementById('batch-status');
+            statusElem.textContent = newBatchStatus;
+            
+            // Update status color based on new status
+            if (newBatchStatus === 'Completed') {
+                statusElem.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+            } else if (newBatchStatus === 'In Progress') {
+                statusElem.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+            } else {
+                statusElem.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+            }
+            
+            // Update the batch data in memory (in a real app, this would update the database)
+            const urlParams = new URLSearchParams(window.location.search);
+            const batchId = urlParams.get('id');
+            const batchData = getBatchData(batchId);
+            batchData.status = newBatchStatus;
+            
+            console.log(`Batch status updated to: ${newBatchStatus}`);
+        }
+        
+        // Filter answer sheets based on search term
+        function filterAnswerSheets(searchTerm) {
+            const rows = document.querySelectorAll('#answer-sheets-body tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                const answerSheetId = row.getAttribute('data-sheet');
+                
+                if (answerSheetId.includes(searchTerm)) {
+                    row.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+            
+            // Update counters
+            document.getElementById('showing-count').textContent = visibleCount;
+            
+            // Update serial numbers for visible rows
+            let serialNumber = 1;
+            rows.forEach(row => {
+                if (!row.classList.contains('hidden')) {
+                    row.cells[0].textContent = serialNumber++;
+                }
+            });
+            
+            // Show/hide no data message
+            if (visibleCount === 0) {
+                document.getElementById('no-data-message').classList.remove('hidden');
+            } else {
+                document.getElementById('no-data-message').classList.add('hidden');
+            }
+        }
+        
+        // Helper function to generate random names for demo purposes
+        function getRandomName() {
+            const firstNames = [
+                'Aisha', 'Rahul', 'Priya', 'Vikram', 'Neha', 'Raj', 'Ananya', 'Arjun',
+                'Kavita', 'Ravi', 'Divya', 'Sanjay', 'Sunita', 'Anil', 'Meena', 'Suresh'
+            ];
+            
+            const lastNames = [
+                'Sharma', 'Patel', 'Singh', 'Kumar', 'Gupta', 'Verma', 'Joshi', 'Mehta',
+                'Shah', 'Desai', 'Kapoor', 'Choudhury', 'Reddy', 'Nair', 'Das', 'Mukherjee'
+            ];
+            
+            return `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`;
+        }
+
+        // Show toast message
+        function showToast(message, type = 'success') {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white transform transition-all duration-300 z-50 flex items-center`;
+            
+            // Add icon based on type
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            toast.innerHTML = `
+                <i class="fas ${icon} mr-2"></i>
+                <span>${message}</span>
+            `;
+            
+            // Add to document
+            document.body.appendChild(toast);
+            
+            // Trigger animation after a short delay to ensure it's visible
+            setTimeout(() => {
+                toast.style.opacity = '1';
+            }, 10);
+            
+            // Remove toast after 3 seconds
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html> 

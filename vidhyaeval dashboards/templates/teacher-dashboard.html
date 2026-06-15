@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidhyaEval - Teacher Dashboard</title>
+    <link rel="icon" type="image/png" href="/static/VidhyEval_logo.png">
+    <link rel="shortcut icon" href="/static/VidhyEval_logo.png">
+    <meta name="theme-color" content="#7C3AED">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .animate-slide-up {
+            animation: slideUp 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+        }
+        .hover-scale {
+            transition: transform 0.2s ease-in-out;
+        }
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 12px;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #4b5563;
+        }
+        
+        .paper-stack {
+            transition: all 0.3s ease;
+        }
+        
+        .paper-stack:hover {
+            transform: translateY(-5px);
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+            line-height: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dark .modal-content {
+            background-color: #1f2937;
+            color: #f3f4f6;
+        }
+
+        .dark .modal-title {
+            color: #f3f4f6 !important;
+        }
+
+        .dark .close {
+            color: #d1d5db;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-0">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="teacher-dashboard.html">
+                            <img src="/static/VidhyEval_logo.png" alt="VidyaEval Logo" class="h-8 w-10 mr-2">
+                        </a>
+                        <a href="teacher-dashboard.html">
+                            <h1 class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent font-['ZCOOL_QingKe_HuangYou']">VidhyaEval</h1>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#teacher-dashboard" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Dashboard</a>
+                    <a href="#evaluation-section" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Evaluate</a>
+                    <a href="#results-section" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Results</a>
+                </div>
+                
+                <div class="flex items-center">
+                    <div class="flex items-center">
+                        <div class="relative">
+                            <button class="flex items-center space-x-3 focus:outline-none mr-8" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                                <div class="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
+                                    <img id="navbar-profile-photo" src="assets/images/default-profile.png" alt="Profile" class="h-8 w-8 rounded-full object-cover">
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-sm font-medium text-gray-900" id="teacher-name">{{ name }}</span>
+                                    <span class="block text-xs text-gray-500">Teacher</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-gray-400 text-xs ml-2"></i>
+                            </button>
+
+                            <!-- Dropdown menu -->
+                            <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 dark:ring-gray-700 focus:outline-none z-50" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                                <a href="#settings-modal" id="settings-button" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1">
+                                    <i class="fas fa-cog mr-2"></i> Settings
+                                </a>
+                                <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <div class="max-w-7xl mx-auto py-8 px-8 lg:px-12">
+        <!-- Welcome Section -->
+        <div class="px-6 py-8">
+            <div class="bg-gradient-to-r from-purple-500 to-purple-700 rounded-2xl shadow-xl p-8 sm:p-10 text-white mb-8 animate-fade-in">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-6">
+                        <img id="welcome-profile-photo" src="assets/images/default-profile.png" alt="Profile" class="h-16 w-16 rounded-full object-cover border-4 border-white shadow-lg">
+                        <div>
+                            <h2 class="text-3xl font-bold">Welcome back,{{ name }}!</h2>
+                            <p class="text-purple-100 mt-2">Department:{{ department }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-8">
+                        <div class="text-center">
+                            <p class="text-purple-100 text-sm">Total Evaluations</p>
+                            <p class="text-2xl font-bold text-white">156</p>
+                            <div class="flex items-center mt-2">
+                                <span class="text-green-300 text-sm font-medium flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 8%
+                                </span>
+                                <span class="text-purple-100 text-sm ml-2">This month</span>
+                            </div>
+                        </div>
+                        <div class="h-12 w-px bg-white/20"></div>
+                        <div class="text-center">
+                            <p class="text-purple-100 text-sm">Pending</p>
+                            <p class="text-xl font-semibold text-white">12</p>
+                        </div>
+                        <div class="h-12 w-px bg-white/20"></div>
+                        <div class="text-center">
+                            <p class="text-purple-100 text-sm">Completed</p>
+                            <p class="text-xl font-semibold text-white">144</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="assigned-batches" class="px-6 py-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-white">Assigned Evaluation Batches</h3>
+                        </div>
+            
+            <!-- Page 1 Cards -->
+            <div id="page-1" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Batch Card 1 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden order-l-4 border-red-500">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="flex items-center space-x-2">
+                                    <h4 class="text-lg font-medium text-gray-900 dark:text-white">Mid-Term Examination - Mathematics</h4>
+                        </div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Class 10-A | Assigned on Apr 20, 2024</p>
+                    </div>
+                            <div class="text-right">
+                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Batch ID:</span>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">BATCH-001</span>
+                        </div>
+                        </div>
+                        
+                        <div class="mt-4 grid grid-cols-2 gap-4">
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Students</span>
+                                <span class="block text-sm font-medium text-gray-900 dark:text-white mt-1">32</span>
+                    </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Due Date</span>
+                                <span class="block text-sm font-medium text-red-600 dark:text-red-400 mt-1">Apr 25, 2024</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-5 flex justify-end">
+                            <a href="batch-details.html?id=BATCH-001" class="inline-flex items-center px-4 py-2 border border-purple-500 rounded-md shadow-sm text-sm font-medium text-purple-600 dark:text-purple-400 bg-white dark:bg-gray-800 hover:bg-purple-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                                Open
+                            </a>
+                        </div>
+            </div>
+        </div>
+
+                <!-- Batch Card 2 -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="flex items-center space-x-2">
+                                    <h4 class="text-lg font-medium text-gray-900 dark:text-white">Quiz - Physics</h4>
+                                </div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Class 11-A | Assigned on Apr 18, 2024</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Batch ID:</span>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">BATCH-003</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 grid grid-cols-2 gap-4">
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Students</span>
+                                <span class="block text-sm font-medium text-gray-900 dark:text-white mt-1">28</span>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Due Date</span>
+                                <span class="block text-sm font-medium text-orange-600 dark:text-orange-400 mt-1">Apr 28, 2024</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-5 flex justify-end">
+                            <a href="batch-details.html?id=BATCH-002" class="inline-flex items-center px-4 py-2 border border-purple-500 rounded-md shadow-sm text-sm font-medium text-purple-600 dark:text-purple-400 bg-white dark:bg-gray-800 hover:bg-purple-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                                Open
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Batch Card 3 -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                <div>
+                                <div class="flex items-center space-x-2">
+                                    <h4 class="text-lg font-medium text-gray-900 dark:text-white">Unit Test - Chemistry</h4>
+                                </div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Class 12-B | Assigned on Apr 21, 2024</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Batch ID:</span>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">BATCH-004</span>
+                            </div>
+                    </div>
+                    
+                        <div class="mt-4 grid grid-cols-2 gap-4">
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Students</span>
+                                <span class="block text-sm font-medium text-gray-900 dark:text-white mt-1">26</span>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Due Date</span>
+                                <span class="block text-sm font-medium text-yellow-600 dark:text-yellow-400 mt-1">May 1, 2024</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-5 flex justify-end">
+                            <a href="batch-details.html?id=BATCH-003" class="inline-flex items-center px-4 py-2 border border-purple-500 rounded-md shadow-sm text-sm font-medium text-purple-600 dark:text-purple-400 bg-white dark:bg-gray-800 hover:bg-purple-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                                Open
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Batch Card 4 - Completed -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                        <div>
+                                <div class="flex items-center space-x-2">
+                                    <h4 class="text-lg font-medium text-gray-900 dark:text-white">Final Examination - Computer Science</h4>
+                                </div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Class 12-A | Assigned on Apr 10, 2024</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Batch ID:</span>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">BATCH-002</span>
+                            </div>
+                    </div>
+                    
+                        <div class="mt-4 grid grid-cols-2 gap-4">
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Students</span>
+                                <span class="block text-sm font-medium text-gray-900 dark:text-white mt-1">30</span>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Due Date</span>
+                                <span class="block text-sm font-medium text-green-600 dark:text-green-400 mt-1">Apr 20, 2024</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-5 flex justify-end">
+                            <a href="batch-details.html?id=BATCH-004" class="inline-flex items-center px-4 py-2 border border-purple-500 rounded-md shadow-sm text-sm font-medium text-purple-600 dark:text-purple-400 bg-white dark:bg-gray-800 hover:bg-purple-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                                Open
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Page 2 Cards (Hidden by default) -->
+            <div id="page-2" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 hidden">
+                <!-- Batch Card 5 -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                        <div>
+                                <div class="flex items-center space-x-2">
+                                    <h4 class="text-lg font-medium text-gray-900 dark:text-white">Weekly Test - English Literature</h4>
+                                </div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Class 11-B | Assigned on Apr 22, 2024</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Batch ID:</span>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">BATCH-005</span>
+                        </div>
+                    </div>
+                    
+                        <div class="mt-4 grid grid-cols-2 gap-4">
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Students</span>
+                                <span class="block text-sm font-medium text-gray-900 dark:text-white mt-1">34</span>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Due Date</span>
+                                <span class="block text-sm font-medium text-yellow-600 dark:text-yellow-400 mt-1">May 3, 2024</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-5 flex justify-end">
+                            <a href="batch-details.html?id=BATCH-005" class="inline-flex items-center px-4 py-2 border border-purple-500 rounded-md shadow-sm text-sm font-medium text-purple-600 dark:text-purple-400 bg-white dark:bg-gray-800 hover:bg-purple-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                                Open
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Batch Card 6 -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                        <div>
+                                <div class="flex items-center space-x-2">
+                                    <h4 class="text-lg font-medium text-gray-900 dark:text-white">Practical Exam - Biology</h4>
+                        </div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Class 12-C | Assigned on Apr 23, 2024</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Batch ID:</span>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">BATCH-006</span>
+                        </div>
+                    </div>
+                    
+                        <div class="mt-4 grid grid-cols-2 gap-4">
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Students</span>
+                                <span class="block text-sm font-medium text-gray-900 dark:text-white mt-1">24</span>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Due Date</span>
+                                <span class="block text-sm font-medium text-yellow-600 dark:text-yellow-400 mt-1">May 5, 2024</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-5 flex justify-end">
+                            <a href="batch-details.html?id=BATCH-006" class="inline-flex items-center px-4 py-2 border border-purple-500 rounded-md shadow-sm text-sm font-medium text-purple-600 dark:text-purple-400 bg-white dark:bg-gray-800 hover:bg-purple-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                                Open
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Batch Card 7 -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                        <div>
+                                <div class="flex items-center space-x-2">
+                                    <h4 class="text-lg font-medium text-gray-900 dark:text-white">Project Evaluation - History</h4>
+                                </div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Class 10-B | Assigned on Apr 24, 2024</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Batch ID:</span>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">BATCH-007</span>
+                    </div>
+                </div>
+                
+                        <div class="mt-4 grid grid-cols-2 gap-4">
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Students</span>
+                                <span class="block text-sm font-medium text-gray-900 dark:text-white mt-1">29</span>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Due Date</span>
+                                <span class="block text-sm font-medium text-yellow-600 dark:text-yellow-400 mt-1">May 7, 2024</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-5 flex justify-end">
+                            <a href="batch-details.html?id=BATCH-007" class="inline-flex items-center px-4 py-2 border border-purple-500 rounded-md shadow-sm text-sm font-medium text-purple-600 dark:text-purple-400 bg-white dark:bg-gray-800 hover:bg-purple-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                                Open
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Batch Card 8 -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                <div>
+                                <div class="flex items-center space-x-2">
+                                    <h4 class="text-lg font-medium text-gray-900 dark:text-white">Semester Final - Geography</h4>
+                                    </div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Class 11-C | Assigned on Apr 25, 2024</p>
+                                </div>
+                            <div class="text-right">
+                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Batch ID:</span>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">BATCH-008</span>
+                        </div>
+                    </div>
+                    
+                        <div class="mt-4 grid grid-cols-2 gap-4">
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Students</span>
+                                <span class="block text-sm font-medium text-gray-900 dark:text-white mt-1">31</span>
+                                    </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Due Date</span>
+                                <span class="block text-sm font-medium text-yellow-600 dark:text-yellow-400 mt-1">May 10, 2024</span>
+                        </div>
+                    </div>
+                    
+                        <div class="mt-5 flex justify-end">
+                            <a href="batch-details.html?id=BATCH-008" class="inline-flex items-center px-4 py-2 border border-purple-500 rounded-md shadow-sm text-sm font-medium text-purple-600 dark:text-purple-400 bg-white dark:bg-gray-800 hover:bg-purple-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                                Open
+                            </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+            <!-- Pagination -->
+            <div class="flex justify-between items-center mt-6">
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                    Showing <span id="page-indicator" class="font-medium">1-4</span> of <span class="font-medium">8</span> batches
+                </div>
+                <div class="flex space-x-2">
+                    <button id="prev-page" class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button id="next-page" class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+    </div>
+            <!-- Quick Actions -->
+        <div class="px-6 py-8">
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Quick Actions</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <a href="#evaluation-section" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover-scale cursor-pointer transition-all duration-200">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400">
+                                <i class="fas fa-file-alt text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-gray-900 dark:text-white">New Evaluation</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Start evaluating new submissions</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="#results-section" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover-scale cursor-pointer transition-all duration-200">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400">
+                                <i class="fas fa-chart-bar text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-gray-900 dark:text-white">Student Results</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">View and manage student performance</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Evaluation Section -->
+            <div id="evaluation-section" class="px-6 py-8">
+                <h3 class="text-xl font-semibold text-gray-800 mb-6">AI-Based Evaluation</h3>
+                
+                <div class="bg-white rounded-xl shadow-lg p-10">
+                    <form id="evaluation-form" action="/submit-evaluation" method="POST" enctype="multipart/form-data">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <!-- Left Column - Upload and Settings -->
+                        <div class="space-y-6">
+                    <div>
+                            <label for="exam-type" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Exam Type <span class="text-red-500">*</span></label>
+                                <select id="exam-type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200" required>
+                                <option value="">Select Exam Type</option>
+                                <option value="mid-term">Mid-Term Examination</option>
+                                <option value="final">Final Examination</option>
+                                <option value="quiz">Quiz</option>
+                                <option value="assignment">Assignment</option>
+                            </select>
+                        </div>
+                        
+                            <div>
+                            <label for="subject" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Subject <span class="text-red-500">*</span></label>
+                                <select id="subject" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200" required>
+                                    <option value="">Select Subject</option>
+                                    <option value="english">English</option>
+                                    <option value="grammar">Grammar</option>
+                                    <option value="science">Science</option>
+                                    <option value="social-science">Social Science</option>
+                                </select>
+                        </div>
+                        
+                            <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Upload Question Paper <span class="text-red-500">*</span></label>
+                            <div class="flex items-center justify-center w-full">
+                                    <label for="question-paper" class="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <i class="fas fa-cloud-upload-alt text-gray-500 text-4xl mb-3"></i>
+                                        <p class="mb-2 text-sm text-gray-700 dark:text-gray-200"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                        <p class="text-xs text-gray-500">PDF, DOCX, or JPG (MAX. 10MB)</p>
+                                    </div>
+                                    <input id="question-paper" type="file" class="hidden" />
+                                </label>
+                            </div>
+                        </div>
+                        
+                            <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Key Points (Optional)</label>
+                            <div class="mb-2">
+                                    <textarea id="key-points" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200" placeholder="Enter key points for evaluation if any, separated by commas"></textarea>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-sm text-gray-500 dark:text-gray-400 mr-2">Or upload a file with key points (optional):</span>
+                                    <label for="key-points-file" class="cursor-pointer bg-white py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                                    Browse
+                                    <input id="key-points-file" type="file" class="hidden" />
+                                </label>
+                            </div>
+                        </div>
+                        
+                            <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Evaluation Criteria (Optional)</label>
+                                <textarea id="evaluation-criteria" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200" placeholder="Enter evaluation criteria if any (e.g., Keyword Matching, Answer Structure, Content Relevance)"></textarea>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">You can leave this empty to use default evaluation criteria</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column - Answer Sheet Upload -->
+                        <div class="space-y-6">
+                    <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Upload Answer Sheets <span class="text-red-500">*</span></label>
+                            <div class="flex items-center justify-center w-full">
+                                    <label for="answer-sheets" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors duration-200 relative">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <i class="fas fa-cloud-upload-alt text-gray-500 text-4xl mb-3"></i>
+                                        <p class="mb-2 text-sm text-gray-700 dark:text-gray-200"><span class="font-semibold">Click to upload multiple files</span> or drag and drop</p>
+                                        <p class="text-xs text-gray-500">PDF, DOCX, or JPG (MAX. 50MB per file)</p>
+                                        <p class="text-xs text-purple-600 font-semibold mt-2">You can select multiple files at once</p>
+                                        <div class="mt-4 text-center">
+                                            <span class="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-xs font-medium">
+                                                <i class="fas fa-files-o mr-1"></i> Multiple Files Allowed
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <input id="answer-sheets" type="file" class="hidden" multiple accept=".pdf,.docx,.jpg,.jpeg" />
+                                </label>
+                            </div>
+                            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400 flex items-center">
+                                <i class="fas fa-info-circle mr-1 text-purple-500"></i>
+                                Hold Ctrl (Windows) or Command (Mac) to select multiple files
+                            </p>
+                        </div>
+                        
+                            <div id="uploaded-files" class="mt-6">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Uploaded Files</label>
+                                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 max-h-48 overflow-y-auto">
+                                <ul class="divide-y divide-gray-200 dark:divide-gray-700" id="file-list">
+                                    <li class="py-3 flex justify-between items-center">
+                                        <div class="flex items-center">
+                                                <i class="fas fa-file-pdf text-red-500 mr-3"></i>
+                                            <span class="text-sm text-gray-700 dark:text-gray-200">answer_sheet_001.pdf</span>
+                                        </div>
+                                            <button class="text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors duration-200">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end">
+                                <button id="start-evaluation" class="inline-flex items-center px-6 py-3 border border-purple-600 text-sm font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                                <i class="fas fa-robot mr-2"></i> Start AI Evaluation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+            <!-- Student Results Section -->
+            <div id="results-section" class="px-6 py-8">
+                <h3 class="text-xl font-semibold text-gray-800 mb-6">Student Results</h3>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <!-- Search Form -->
+                    <div class="mb-6">
+                        <h4 class="text-lg font-medium text-gray-700 mb-4">Search Student Results</h4>
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <div class="flex-1">
+                                <label for="search-type" class="block text-sm font-medium text-gray-700 mb-2">Search By</label>
+                                <select id="search-type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200">
+                                    <option value="roll">Roll Number</option>
+                                    <option value="enrollment">Enrollment Number</option>
+                                    <option value="name">Student Name</option>
+                                </select>
+                            </div>
+                            <div class="flex-1">
+                                <label for="search-term" class="block text-sm font-medium text-gray-700 mb-2">Enter Search Term</label>
+                                <input type="text" id="search-term" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200" placeholder="e.g., 2024001 or ENR78540">
+                            </div>
+                            <div class="flex items-end">
+                                <button id="search-results-btn" class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                                    <i class="fas fa-search mr-2"></i> Search
+                            </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Results Table -->
+                    <div id="results-container" class="overflow-x-auto">
+                        <h4 class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-4">Search Results</h4>
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                            <thead class="bg-gray-50 dark:bg-gray-800">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Student Name</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Roll No.</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Subject</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Exam Type</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Score</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Grade</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white dark:bg-gray-700 divide-y divide-gray-200 dark:divide-gray-600" id="results-table-body">
+                                <!-- Results will be loaded here dynamically -->
+                                <tr id="no-results-row">
+                                    <td colspan="7" class="px-6 py-10 text-center text-gray-500 dark:text-gray-400">
+                                        <div class="flex flex-col items-center">
+                                            <i class="fas fa-search fa-3x text-gray-300 dark:text-gray-500 mb-4"></i>
+                                            <p>Search for a student to view their results</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                                        </div>
+                </div>
+            </div>
+
+            <!-- Student Result Detail Modal -->
+            <div id="result-detail-modal" class="modal">
+                <div class="modal-content max-w-4xl bg-white dark:bg-gray-800 rounded-lg shadow-xl">
+                    <span class="close text-gray-700 dark:text-gray-300" id="close-result-detail">&times;</span>
+                    <h2 class="modal-title text-gray-900 dark:text-white">Student Result Details</h2>
+                    
+                    <div id="result-detail-content" class="mt-6">
+                        <!-- Student Basic Info -->
+                        <div class="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg mb-6 shadow-sm">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Student Name</h3>
+                                    <p class="text-base font-medium text-gray-900 dark:text-gray-100 mt-1" id="detail-student-name">John Doe</p>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Roll Number</h3>
+                                    <p class="text-base font-medium text-gray-900 dark:text-gray-100 mt-1" id="detail-roll-no">2024001</p>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Class</h3>
+                                    <p class="text-base font-medium text-gray-900 dark:text-gray-100 mt-1" id="detail-class">10-A</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Subject Scores -->
+                        <div class="mb-6">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Exam Results</h3>
+                            <div class="bg-white dark:bg-gray-700 rounded-lg shadow-sm overflow-hidden border border-gray-200 dark:border-gray-600">
+                                <div class="p-5 border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800">
+                                    <div class="flex flex-col md:flex-row md:justify-between md:items-center">
+                                        <div class="mb-4 md:mb-0">
+                                            <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100" id="detail-exam-type">Mid-Term Examination</h4>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" id="detail-exam-date">March 15, 2024</p>
+                                        </div>
+                                        <div class="flex flex-wrap gap-4">
+                                            <div class="text-center px-4 py-2 bg-purple-50 dark:bg-purple-900 rounded-lg">
+                                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Overall Grade</span>
+                                                <p class="text-xl font-bold text-purple-600 dark:text-purple-400 mt-1" id="detail-overall-grade">A+</p>
+                                            </div>
+                                            <div id="cgpa-container" class="text-center px-4 py-2 bg-blue-50 dark:bg-blue-900 rounded-lg hidden">
+                                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">CGPA</span>
+                                                <p class="text-xl font-bold text-blue-600 dark:text-blue-400 mt-1" id="detail-cgpa">9.2/10</p>
+                                            </div>
+                                            <div id="percentage-container" class="text-center px-4 py-2 bg-green-50 dark:bg-green-900 rounded-lg hidden">
+                                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Percentage</span>
+                                                <p class="text-xl font-bold text-green-600 dark:text-green-400 mt-1" id="detail-percentage">90.3%</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-5">
+                                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+                                        <thead class="bg-gray-50 dark:bg-gray-800">
+                                            <tr id="result-table-headers">
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Subject</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Max Marks</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Marks Obtained</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Grade</th>
+                                </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-700" id="detail-subjects-body">
+                                            <!-- Subject details will be added dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+                        
+                        <!-- Teacher Comments -->
+                        <div class="mb-6">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Teacher's Comments</h3>
+                            <div class="bg-white dark:bg-gray-700 rounded-lg shadow-sm p-5 border border-gray-200 dark:border-gray-600">
+                                <p class="text-gray-700 dark:text-gray-300" id="detail-teacher-comments">
+                                    John shows strong understanding of concepts. He needs to focus more on practical applications.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="flex justify-end space-x-4">
+                            <button class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200 flex items-center">
+                                <i class="fas fa-download mr-2"></i> Download PDF
+                            </button>
+                            <button class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors duration-200 flex items-center">
+                                <i class="fas fa-edit mr-2"></i> Edit Result
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Total Evaluations Modal -->
+    <div id="evaluationsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeEvaluationsModal">&times;</span>
+            <h2 class="modal-title">Total Evaluations</h2>
+            <div class="space-y-4">
+                <!-- Evaluation Papers Stack -->
+                <div id="evaluationsList" class="space-y-3">
+                    <!-- Papers will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty state for file upload -->
+    <div id="empty-file-list" class="text-center py-8 hidden">
+        <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/File%20Folder.png" alt="Empty folder" class="w-24 h-24 mx-auto mb-4">
+        <p class="text-gray-500">No files uploaded yet</p>
+    </div>
+
+    <!-- Empty state for evaluations modal -->
+    <div id="empty-evaluations" class="text-center py-8 hidden">
+        <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Memo.png" alt="No evaluations" class="w-24 h-24 mx-auto mb-4">
+        <p class="text-gray-500">No evaluations available</p>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content max-w-2xl bg-white dark:bg-gray-800 shadow-xl rounded-lg">
+            <span class="close text-gray-700 dark:text-gray-300" id="closeSettingsModal">&times;</span>
+            <h2 class="modal-title text-gray-900 dark:text-white">Settings</h2>
+            
+            <div class="mt-6 space-y-6">
+                <!-- Profile Settings -->
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Profile Settings</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Profile Picture</label>
+                            <div class="flex items-center space-x-4">
+                                <div class="relative">
+                                    <img id="settings-profile-photo" src="assets/images/default-profile.png" alt="Profile" class="h-16 w-16 rounded-full object-cover border-2 border-purple-200 dark:border-purple-800">
+                                    <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 hover:opacity-100 transition-opacity duration-200">
+                                        <i class="fas fa-camera text-white text-xl"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <label for="profile-photo-upload" class="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                                        <i class="fas fa-upload mr-2"></i> Upload New Photo
+                                    </label>
+                                    <input id="profile-photo-upload" type="file" class="hidden" accept="image/*">
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">JPG, PNG or GIF (MAX. 2MB)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="display-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Display Name</label>
+                            <input type="text" id="display-name" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-gray-100" value="">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                            <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-gray-100" value="">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification Settings -->
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Notification Settings</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700 dark:text-gray-300">Email Notifications</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700 dark:text-gray-300">Desktop Notifications</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme Settings -->
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Theme Settings</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700 dark:text-gray-300">Dark Mode</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="theme-toggle-settings" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <div class="flex justify-end">
+                    <button class="px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors duration-200">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/auth.js"></script>
+    <script src="/static/teacher.js"></script>
+    <script src="/static/theme.js"></script>
+    <script>
+    // Sample data for evaluations
+    const evaluations = [
+        { id: 'EVL001', student: 'John Doe', subject: 'Mathematics', score: '85/100', date: '2024-03-15' },
+        { id: 'EVL002', student: 'Jane Smith', subject: 'Physics', score: '92/100', date: '2024-03-14' },
+        { id: 'EVL003', student: 'Mike Johnson', subject: 'Chemistry', score: '78/100', date: '2024-03-13' },
+        { id: 'EVL004', student: 'Sarah Williams', subject: 'Biology', score: '95/100', date: '2024-03-12' },
+        { id: 'EVL005', student: 'Tom Brown', subject: 'English', score: '88/100', date: '2024-03-11' }
+    ];
+
+    // Function to create evaluation paper card
+    function createEvaluationCard(evaluation) {
+        return `
+            <div class="paper-stack bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-all">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="font-semibold text-gray-900">${evaluation.student}</h3>
+                        <p class="text-sm text-gray-600">${evaluation.subject}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-lg font-bold text-purple-600">${evaluation.score}</p>
+                        <p class="text-xs text-gray-500">${evaluation.date}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Initialize modals
+    document.addEventListener('DOMContentLoaded', function() {
+        const evaluationsModal = document.getElementById('evaluationsModal');
+        const evaluationsList = document.getElementById('evaluationsList');
+        const emptyEvaluations = document.getElementById('empty-evaluations');
+        
+        // Show empty state if no evaluations
+        if (evaluations.length === 0) {
+            evaluationsList.style.display = 'none';
+            emptyEvaluations.style.display = 'block';
+        } else {
+            evaluationsList.innerHTML = evaluations.map(createEvaluationCard).join('');
+            emptyEvaluations.style.display = 'none';
+        }
+
+        // Show empty state for file upload
+        const fileInputs = ['question-paper', 'answer-sheets', 'key-points-file'];
+        fileInputs.forEach(inputId => {
+            const input = document.getElementById(inputId);
+            const emptyState = document.getElementById('empty-file-list');
+            
+            input.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    emptyState.style.display = 'none';
+                } else {
+                    emptyState.style.display = 'block';
+                }
+            });
+        });
+        
+        // Total Evaluations card click handler
+        document.getElementById('totalEvaluationsCard').addEventListener('click', function() {
+            evaluationsModal.style.display = 'block';
+        });
+        
+        // Close button
+        document.getElementById('closeEvaluationsModal').addEventListener('click', function() {
+            evaluationsModal.style.display = 'none';
+        });
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === evaluationsModal) {
+                evaluationsModal.style.display = 'none';
+            }
+        });
+    });
+
+    document.getElementById('start-evaluation').addEventListener('click', function(e) {
+        e.preventDefault();
+        // Get required fields
+        const examType = document.getElementById('exam-type').value;
+        const subject = document.getElementById('subject').value;
+        const questionPaper = document.getElementById('question-paper').files;
+        const answerSheets = document.getElementById('answer-sheets').files;
+
+        // Only validate essential fields
+        if (!examType || !subject || !questionPaper.length || !answerSheets.length) {
+            alert('Please fill in all required fields (Exam Type, Subject, Question Paper, and Answer Sheets)');
+            return;
+        }
+
+        // Start the evaluation process
+        startAIEvaluation({
+            examType,
+            subject,
+            questionPaper: questionPaper[0],
+            answerSheets: Array.from(answerSheets),
+            keyPoints: document.getElementById('key-points').value,
+            evaluationCriteria: document.getElementById('evaluation-criteria').value
+        });
+    });
+
+    function startAIEvaluation(data) {
+        // Add your AI evaluation logic here
+        console.log('Starting AI evaluation with data:', data);
+        // You can add loading state, API calls, etc.
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userDropdown = document.getElementById('user-dropdown');
+        const settingsModal = document.getElementById('settings-modal');
+        const settingsButton = document.getElementById('settings-button');
+        const closeSettingsModal = document.getElementById('closeSettingsModal');
+        const themeToggleSettings = document.getElementById('theme-toggle-settings');
+
+        // Toggle dropdown
+        userMenuButton.addEventListener('click', function() {
+            userDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!userMenuButton.contains(event.target) && !userDropdown.contains(event.target)) {
+                userDropdown.classList.add('hidden');
+            }
+        });
+
+        // Settings modal
+        settingsButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            settingsModal.style.display = 'block';
+            userDropdown.classList.add('hidden');
+        });
+
+        closeSettingsModal.addEventListener('click', function() {
+            settingsModal.style.display = 'none';
+        });
+
+        // Close settings modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === settingsModal) {
+                settingsModal.style.display = 'none';
+            }
+        });
+
+        // Theme toggle in settings
+        const htmlElement = document.documentElement;
+        themeToggleSettings.checked = htmlElement.classList.contains('dark');
+        
+        themeToggleSettings.addEventListener('change', function() {
+            if (this.checked) {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Logout functionality
+        document.getElementById('logout-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Add your logout logic here
+            window.location.href = 'index.html';
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const settingsProfilePhoto = document.getElementById('settings-profile-photo');
+        const profilePhotoUpload = document.getElementById('profile-photo-upload');
+        const navbarProfilePhoto = document.getElementById('navbar-profile-photo');
+        const welcomeProfilePhoto = document.getElementById('welcome-profile-photo');
+
+        // Function to update profile photo everywhere
+        function updateProfilePhoto(photoUrl) {
+            const defaultPhoto = 'assets/images/default-profile.png';
+            const photoSrc = photoUrl || defaultPhoto;
+            settingsProfilePhoto.src = photoSrc;
+            navbarProfilePhoto.src = photoSrc;
+            welcomeProfilePhoto.src = photoSrc;
+            localStorage.setItem('profilePhoto', photoUrl);
+        }
+
+        // Get profile photo from localStorage if exists
+        const savedPhoto = localStorage.getItem('profilePhoto');
+        if (savedPhoto) {
+            updateProfilePhoto(savedPhoto);
+        }
+
+        // Handle profile photo upload
+        profilePhotoUpload.addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                
+                // Check file size (2MB limit)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('File size must be less than 2MB');
+                    return;
+                }
+
+                // Check file type
+                if (!file.type.startsWith('image/')) {
+                    alert('Please upload an image file');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    updateProfilePhoto(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Preview hover effect for profile photo
+        settingsProfilePhoto.addEventListener('mouseenter', function() {
+            this.parentElement.querySelector('.absolute').classList.remove('opacity-0');
+        });
+
+        settingsProfilePhoto.addEventListener('mouseleave', function() {
+            this.parentElement.querySelector('.absolute').classList.add('opacity-0');
+        });
+    });
+
+    // Sample student results data
+    const studentResults = [
+        {
+            id: '1',
+            name: 'John Doe',
+            rollNo: '2024001',
+            enrollmentNo: 'ENR78540',
+            class: '10-A',
+            subject: 'Mathematics',
+            examType: 'Mid-Term',
+            score: '85/100',
+            grade: 'A',
+            date: 'March 15, 2024',
+            status: 'Evaluated',
+            teacherComments: 'John shows strong understanding of concepts. He needs to focus more on practical applications.',
+            subjects: [
+                { name: 'Mathematics', maxMarks: 100, obtained: 85, grade: 'A' },
+                { name: 'Physics', maxMarks: 100, obtained: 78, grade: 'B+' },
+                { name: 'Chemistry', maxMarks: 100, obtained: 90, grade: 'A+' }
+            ]
+        },
+        {
+            id: '2',
+            name: 'Jane Smith',
+            rollNo: '2024002',
+            enrollmentNo: 'ENR78541',
+            class: '10-A',
+            subject: 'Science',
+            examType: 'Mid-Term',
+            score: '92/100',
+            grade: 'A+',
+            date: 'March 15, 2024',
+            status: 'Evaluated',
+            teacherComments: 'Jane demonstrates excellent problem-solving skills and attention to detail.',
+            subjects: [
+                { name: 'Mathematics', maxMarks: 100, obtained: 92, grade: 'A+' },
+                { name: 'Physics', maxMarks: 100, obtained: 88, grade: 'A' },
+                { name: 'Chemistry', maxMarks: 100, obtained: 94, grade: 'A+' }
+            ]
+        },
+        {
+            id: '3',
+            name: 'Mike Johnson',
+            rollNo: '2024003',
+            enrollmentNo: 'ENR78542',
+            class: '10-B',
+            subject: 'English',
+            examType: 'Final',
+            score: '78/100',
+            grade: 'B+',
+            date: 'March 20, 2024',
+            status: 'Evaluated',
+            teacherComments: 'Mike has good language skills but needs to work on grammar and writing structure.',
+            subjects: [
+                { name: 'English', maxMarks: 100, obtained: 78, grade: 'B+' },
+                { name: 'Social Studies', maxMarks: 100, obtained: 82, grade: 'A-' },
+                { name: 'Literature', maxMarks: 100, obtained: 75, grade: 'B' }
+            ]
+        },
+        {
+            id: '4',
+            name: 'Priya Sharma',
+            rollNo: '2024004',
+            enrollmentNo: 'ENR78543',
+            class: 'Computer Science - Semester 4',
+            subject: 'Computer Science',
+            examType: 'Semester Exam',
+            score: '542/600',
+            grade: 'A',
+            cgpa: '9.2/10',
+            percentage: '90.3%',
+            date: 'April 2, 2024',
+            status: 'Evaluated',
+            teacherComments: 'Priya has shown excellent understanding of algorithms and data structures. Strong coding skills with good documentation practices.',
+            subjects: [
+                { name: 'Data Structures & Algorithms', code: 'CS401', credits: 4, maxMarks: 100, obtained: 93, grade: 'A+' },
+                { name: 'Database Management Systems', code: 'CS402', credits: 4, maxMarks: 100, obtained: 88, grade: 'A' },
+                { name: 'Web Technologies', code: 'CS403', credits: 3, maxMarks: 100, obtained: 95, grade: 'A+' },
+                { name: 'Operating Systems', code: 'CS404', credits: 4, maxMarks: 100, obtained: 87, grade: 'A' },
+                { name: 'Computer Networks', code: 'CS405', credits: 3, maxMarks: 100, obtained: 91, grade: 'A+' },
+                { name: 'Software Engineering', code: 'CS406', credits: 2, maxMarks: 100, obtained: 88, grade: 'A' }
+            ]
+        }
+    ];
+
+    // Function to search for student results
+    function searchStudentResults() {
+        const searchType = document.getElementById('search-type').value;
+        const searchTerm = document.getElementById('search-term').value.trim().toLowerCase();
+        const resultsTableBody = document.getElementById('results-table-body');
+        const noResultsRow = document.getElementById('no-results-row');
+        
+        // Clear previous results
+        resultsTableBody.innerHTML = '';
+        
+        // If search term is empty, show the no results message
+        if (!searchTerm) {
+            resultsTableBody.appendChild(noResultsRow);
+            return;
+        }
+        
+        // Filter results based on search criteria
+        const filteredResults = studentResults.filter(student => {
+            if (searchType === 'roll') {
+                return student.rollNo.toLowerCase().includes(searchTerm);
+            } else if (searchType === 'enrollment') {
+                return student.enrollmentNo.toLowerCase().includes(searchTerm);
+            } else {
+                return student.name.toLowerCase().includes(searchTerm);
+            }
+        });
+        
+        // Display results or no results message
+        if (filteredResults.length === 0) {
+            resultsTableBody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="px-6 py-10 text-center text-gray-500 dark:text-gray-400">
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-search fa-3x text-gray-300 dark:text-gray-500 mb-4"></i>
+                            <p>No results found for "${searchTerm}"</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        } else {
+            filteredResults.forEach(student => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200';
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">${student.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">${student.rollNo}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">${student.subject}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">${student.examType}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">${student.score}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ${getGradeColorClass(student.grade)}">${student.grade}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        <div class="flex space-x-3">
+                            <button class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 transition-colors duration-200 view-result" data-student-id="${student.id}">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 transition-colors duration-200">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 transition-colors duration-200">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                resultsTableBody.appendChild(row);
+            });
+            
+            // Add event listeners to view result buttons
+            document.querySelectorAll('.view-result').forEach(button => {
+                button.addEventListener('click', function() {
+                    const studentId = this.getAttribute('data-student-id');
+                    showStudentResultDetail(studentId);
+                });
+            });
+        }
+    }
+    
+    // Function to show student result details in modal
+    function showStudentResultDetail(studentId) {
+        const student = studentResults.find(s => s.id === studentId);
+        if (!student) return;
+        
+        // Reset any previous changes
+        const tableHeaders = document.getElementById('result-table-headers');
+        tableHeaders.innerHTML = `
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Subject</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Max Marks</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Marks Obtained</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Grade</th>
+        `;
+        
+        // Hide CGPA and percentage containers by default
+        document.getElementById('cgpa-container').classList.add('hidden');
+        document.getElementById('percentage-container').classList.add('hidden');
+        
+        // Populate the modal with student details
+        document.getElementById('detail-student-name').textContent = student.name;
+        document.getElementById('detail-roll-no').textContent = student.rollNo;
+        document.getElementById('detail-class').textContent = student.class;
+        document.getElementById('detail-exam-type').textContent = student.examType + ' Examination';
+        document.getElementById('detail-exam-date').textContent = student.date;
+        document.getElementById('detail-overall-grade').textContent = student.grade;
+        document.getElementById('detail-teacher-comments').textContent = student.teacherComments;
+        
+        // Populate subjects table
+        const subjectsBody = document.getElementById('detail-subjects-body');
+        subjectsBody.innerHTML = '';
+        
+        // Check if this is a university-style result (has course codes and credits)
+        const isUniversityStyle = student.subjects.some(subject => subject.code && subject.credits);
+        
+        if (isUniversityStyle) {
+            // Update table headers for university-style results
+            tableHeaders.innerHTML = `
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Course Code</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Course Name</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Credits</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Marks</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Grade</th>
+            `;
+            
+            // Display CGPA and percentage if available
+            if (student.cgpa) {
+                document.getElementById('cgpa-container').classList.remove('hidden');
+                document.getElementById('detail-cgpa').textContent = student.cgpa;
+            }
+            
+            if (student.percentage) {
+                document.getElementById('percentage-container').classList.remove('hidden');
+                document.getElementById('detail-percentage').textContent = student.percentage;
+            }
+            
+            // Add university-style subject rows
+            student.subjects.forEach(subject => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">${subject.code}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">${subject.name}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">${subject.credits}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">${subject.obtained}/${subject.maxMarks}</td>
+                    <td class="px-4 py-3 text-sm font-medium ${getGradeColorClass(subject.grade)}">${subject.grade}</td>
+                `;
+                subjectsBody.appendChild(row);
+            });
+            
+            // Add a summary row with total credits
+            const totalCredits = student.subjects.reduce((sum, subject) => sum + subject.credits, 0);
+            const totalMarks = student.subjects.reduce((sum, subject) => sum + subject.obtained, 0);
+            const maxPossibleMarks = student.subjects.reduce((sum, subject) => sum + subject.maxMarks, 0);
+            
+            const summaryRow = document.createElement('tr');
+            summaryRow.className = 'bg-gray-50 dark:bg-gray-800 font-medium';
+            summaryRow.innerHTML = `
+                <td class="px-4 py-3 text-sm font-bold text-gray-900 dark:text-gray-100" colspan="2">Total</td>
+                <td class="px-4 py-3 text-sm font-bold text-gray-900 dark:text-gray-100">${totalCredits}</td>
+                <td class="px-4 py-3 text-sm font-bold text-gray-900 dark:text-gray-100">${totalMarks}/${maxPossibleMarks}</td>
+                <td class="px-4 py-3 text-sm font-bold ${getGradeColorClass(student.grade)}">${student.grade}</td>
+            `;
+            subjectsBody.appendChild(summaryRow);
+        } else {
+            // Regular subject rows for school results
+            student.subjects.forEach(subject => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">${subject.name}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">${subject.maxMarks}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">${subject.obtained}</td>
+                    <td class="px-4 py-3 text-sm font-medium ${getGradeColorClass(subject.grade)}">${subject.grade}</td>
+                `;
+                subjectsBody.appendChild(row);
+            });
+            
+            // Add total row for school results
+            const totalMarks = student.subjects.reduce((sum, subject) => sum + subject.obtained, 0);
+            const maxPossibleMarks = student.subjects.reduce((sum, subject) => sum + subject.maxMarks, 0);
+            
+            const summaryRow = document.createElement('tr');
+            summaryRow.className = 'bg-gray-50 dark:bg-gray-800 font-medium';
+            summaryRow.innerHTML = `
+                <td class="px-4 py-3 text-sm font-bold text-gray-900 dark:text-gray-100">Total</td>
+                <td class="px-4 py-3 text-sm font-bold text-gray-900 dark:text-gray-100">${maxPossibleMarks}</td>
+                <td class="px-4 py-3 text-sm font-bold text-gray-900 dark:text-gray-100">${totalMarks}</td>
+                <td class="px-4 py-3 text-sm font-bold ${getGradeColorClass(student.grade)}">${student.grade}</td>
+            `;
+            subjectsBody.appendChild(summaryRow);
+        }
+        
+        // Show the modal
+        document.getElementById('result-detail-modal').style.display = 'block';
+    }
+    
+    // Event listeners for search functionality
+    document.getElementById('search-results-btn').addEventListener('click', searchStudentResults);
+    document.getElementById('search-term').addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') {
+            searchStudentResults();
+        }
+    });
+    
+    // Close result detail modal
+    document.getElementById('close-result-detail').addEventListener('click', function() {
+        document.getElementById('result-detail-modal').style.display = 'none';
+    });
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        const resultDetailModal = document.getElementById('result-detail-modal');
+        if (event.target === resultDetailModal) {
+            resultDetailModal.style.display = 'none';
+        }
+    });
+
+    // Function to get color class based on grade
+    function getGradeColorClass(grade) {
+        if (grade.includes('A+') || grade === 'A+') {
+            return 'text-green-600 dark:text-green-400';
+        } else if (grade.includes('A') || grade === 'A') {
+            return 'text-green-500 dark:text-green-300';
+        } else if (grade.includes('B+') || grade === 'B+') {
+            return 'text-blue-600 dark:text-blue-400';
+        } else if (grade.includes('B') || grade === 'B') {
+            return 'text-blue-500 dark:text-blue-300';
+        } else if (grade.includes('C') || grade === 'C') {
+            return 'text-yellow-600 dark:text-yellow-400';
+        } else {
+            return 'text-red-600 dark:text-red-400';
+        }
+    }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,8 @@
+*  JVM - Java Virtual Machine (JVM) is a platform
+         independent execution environment that
+   converts Java bite code into machine language
+   and executes it.
+=>   It is called 'virtual machine' because it
+  provides a machine interface that does not depend
+  on the underlying operating system and hardware
+  architecture.
